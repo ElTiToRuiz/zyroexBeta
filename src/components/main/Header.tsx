@@ -30,7 +30,9 @@ export const Header = ({ toggleSidebar }: SidebarProps) => {
             }
 
             {/* Business Name / Logo */}
-            <div className="text-xl font-bold">[Business Name / Logo]</div>
+            <div className="text-xl font-bold">
+                Ecommerce Blueprint Demo App
+            </div>
 
             <div className="flex space-x-6">
                 {/* Home Button */}
