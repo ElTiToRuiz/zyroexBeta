@@ -8,18 +8,6 @@ export const parseDateToLocal = (t: Date) => {
     // Create a Date object from the GMT date string (ISO format)
     const date = new Date(t);
 
-    // Define options for formatting the date in the local timezone
-    // const options: Intl.DateTimeFormatOptions = {
-    //     weekday: 'long',     // Full name of the weekday (e.g., 'Sunday')
-    //     day: '2-digit',      // Day with leading zero if needed
-    //     month: 'long',       // Full month name (e.g., 'November')
-    //     year: 'numeric',     // Full year (e.g., '2024')
-    //     hour: '2-digit',     // Hour with leading zero if needed
-    //     minute: '2-digit',   // Minute with leading zero if needed
-    //     second: '2-digit',   // Second with leading zero if needed
-    //     hour12: false,        // Use 12-hour time format (AM/PM)
-    // };
-
     // const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
     return date.toUTCString();
 }

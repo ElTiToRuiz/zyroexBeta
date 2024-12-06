@@ -15,43 +15,5 @@ export const teamMembersChartConfig = (labels: string[], data: number[]) => {
             hoverBorderColor: '#fff',
             hoverBorderWidth: 2
         }],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                r: {
-                    angleLines: {
-                        display: true,
-                        color: '#ddd'
-                    },
-                    suggestedMin: 0,
-                    suggestedMax: Math.max(...data) + 10,
-                    ticks: {
-                        beginAtZero: true,
-                        stepSize: 1,
-                        color: '#777'
-                    },
-                }
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        color: '#333'
-                    }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    borderColor: '#2980b9',
-                    borderWidth: 1
-                }
-            },
-            interaction: {
-                mode: 'index',
-                intersect: false
-            }
-        }
     };
 };

@@ -35,12 +35,6 @@ export const Orders = () => {
                     >
                         <FiDatabase className="inline-block mr-2" /> List
                     </button>
-                    {/* <button
-                        className={`p-2 rounded ${view == 'calendar' ? 'bg-gray-200' : 'bg-white'}`}
-                        onClick={() => setView("calendar")}
-                    >
-                        <FiCalendar className="inline-block mr-2" /> Calendar
-                    </button> */}
                     <button
                         className={`p-2 rounded mr-4 ${view == 'table' ? 'bg-gray-200' : 'bg-white'}`}
                         onClick={()=>{handdleOrdersViewType('table')}}
@@ -51,9 +45,6 @@ export const Orders = () => {
             </div>        
             
             {
-                // view == 'calendar' ? (
-                //     <OrderCalendar />
-                // ) : 
                 view == 'table' ? (
                     filteredByStatus && <OrderTable/>
                 ) : 

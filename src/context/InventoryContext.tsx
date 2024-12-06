@@ -1,9 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { NewProduct, Product } from "../utils/products";
 import { applyFiltersToInventory } from "../services/productService";
-import { addProductToAPI, deleteProductInAPI, getProducts, updateProductInAPI } from "../services/fetch/fetchProducts";
-import { handleDeleteProduct, handdleNewProduct, handleUpdateProduct } from "../services/sockets/inventorySocket";
-import { socket } from "../services/sockets/socket";
+import { Product } from "../utils/types";
+import { products } from "../utils/data/productsData";
 
 interface InventoryContextType {
     inventory: Product[];
@@ -20,7 +18,7 @@ interface InventoryContextType {
     setFilterOutOfstockQuantity: (value: boolean) => void;
     setFilterLowstockQuantity: (value: boolean) => void;
     fetchInventory: () => void;
-    addInventoryItem: (imageSrc: string, name: string, sku: string, price: number, stockQuantity: number, threshold: number) => void;
+    addInventoryItem: (name: string, sku: string, price: number, stockQuantity: number, threshold: number) => void;
     onSaveChanges: (name: string, sku: string, price: number, newstockQuantity: number, newThreshold: number) => void;
     onDelete: (sku: string) => void;
     applyFilters: () => void;
@@ -56,41 +54,22 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
 
 
     useEffect(() => {
-        // Define handlers so that they can be passed to `socket.off` properly
-        const handleNewProductEvent = (product: Product) => handdleNewProduct({product, inventory, setInventory});
-        const handleUpdateProductEvent = (product:Product) => handleUpdateProduct({product, setInventory});
-        const handleDeleteProductEvent = (product: Product) => handleDeleteProduct({product, setInventory});
-
-        // Attach socket event listeners
-        socket.on('new-product', handleNewProductEvent);
-        socket.on('update-product', handleUpdateProductEvent);
-        socket.on('delete-product', handleDeleteProductEvent);
-
-        // Cleanup function to remove event listeners when component unmounts
-        return () => {
-            socket.off('new-product', handleNewProductEvent);
-            socket.off('update-product', handleUpdateProductEvent);
-            socket.off('delete-product', handleDeleteProductEvent);
-        };
-    }, [inventory]); // Add `inventory` as a dependency to handle updates based on the latest state
-
-    useEffect(() => {
         // update filteringInventory when inventory changes but keeping filters
         applyFilters();
     }, [inventory])
 
     // Fetch a la API para obtener los productos
     const fetchInventory = async () => {
-        const products = await getProducts();
-        setInventory(products);
-        setFiltering(products);
+        const newProducts = products;
+        setInventory(newProducts);
+        setFiltering(newProducts);
     };
 
     // Función para añadir un item al inventario
-    const addInventoryItem = async (imageSrc: string, name: string, sku: string, price: number, stockQuantity: number, threshold: number) => {
-        const newProduct: NewProduct = { imageSrc, name, price, sku, stockQuantity, threshold };
+    const addInventoryItem = async (name: string, sku: string, price: number, stock: number, threshold: number) => {
+        const newProduct: Product = {id: 'newId', name, price, sku, stock, threshold };
         try {
-            await addProductToAPI(newProduct);
+            setInventory([...inventory, newProduct]);
         } catch (error) {
             console.error('Error adding product:', error);
             alert('Error adding product. Try again!');
@@ -101,7 +80,12 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
     const onSaveChanges = (name: string, sku: string, price: number, newstockQuantity: number, newThreshold: number) => {
         const updatedProduct = inventory.find(product => product.sku === sku);
         if (updatedProduct) {
-            updateProductInAPI({ ...updatedProduct, name, price, stockQuantity: newstockQuantity, threshold: newThreshold });
+            setInventory(inventory.map(product => {
+                if (product.sku === sku) {
+                    return { ...product, name, price, stockQuantity: newstockQuantity, threshold: newThreshold };
+                }
+                return product;
+            }));
         } else {
             console.log('Product not found');
         }
@@ -115,7 +99,7 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
         try{
-            await deleteProductInAPI(deletedProduct);
+            setInventory(inventory.filter(product => product.sku !== sku));
         }catch(error){
             console.error('Error deleting product:', error);
             alert('Error deleting product. Try again!');

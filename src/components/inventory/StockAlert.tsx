@@ -6,8 +6,8 @@ export const StockAlert: React.FC = () => {
 	const { inventory } = useInventory();
 
 	// Filtramos los productos fuera de stock y con bajo stock
-	const outOfStockItems = inventory.filter(product => product.stockQuantity === 0).map(product => product.name);
-	const lowStockItems = inventory.filter(product => 0 < product.stockQuantity && product.stockQuantity <= product.threshold).map(product => product.name);
+	const outOfStockItems = inventory.filter(product => product.stock === 0).map(product => product.name);
+	const lowStockItems = inventory.filter(product => 0 < product.stock && product.stock <= product.threshold).map(product => product.name);
 
 	return (
 		<div className="p-6 bg-blue-50 border-l-4 rounded-lg shadow-blue-100 shadow-sm space-y-6 hover:bg-blue-100  

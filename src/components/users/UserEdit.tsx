@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useUserContext } from "../../context/userContext";
-import { useAuthUser, User } from "../../context/authContext";
+import { useAuthUser } from "../../context/authContext";
 import { IoMdClose } from "react-icons/io";
+import { User } from "../../utils/types";
 
 export const EditUser = ({ user, onCancel }: { user: User, onCancel: () => void }) => {
     const { hasSuperAdminRole, authUser } = useAuthUser();

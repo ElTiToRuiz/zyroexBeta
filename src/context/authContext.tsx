@@ -1,17 +1,14 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { authMe, login, logOut, register } from '../services/fetch/fetchAuth';
 import { useNavigate } from 'react-router-dom';
+import { User } from '../utils/types';
 
-
-
-// Define el tipo de usuario
-export type User = {
-    id: string;
-    username: string;
-    email: string;
-    role: 'pending' | 'staff' | 'manager' | 'admin' | 'superadmin';
-    lastLogin: Date;
-};
+const DEMO_USER : User = {
+	id: 'user-id',
+	username: 'test-user',
+	email: 'testuser@testing',
+	role: 'superadmin',
+	lastLogin: new Date(),
+}
 
 interface AuthFormValues {
     username?: string; // Optional for login form
@@ -65,7 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const user = await authMe();
+                const user = DEMO_USER; 
                 setAuthUser(user as User);
                 setIsAuth(true);
             } catch (error) {
@@ -102,14 +99,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             if (type === 'login') {
                 // Call login API
-                user = await login({ email, password });
+                user = DEMO_USER;
             } else {
                 // Call register API
                 if (!username) {
                     setError('Username is required');
                     return;
                 }
-                user = await register({ username, email, password });
+                user = DEMO_USER;
             }
 
             // Set user and auth state on success
@@ -138,7 +135,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setAuthUser(null);
         setIsAuth(false);
         localStorage.clear();
-        await logOut();
     }
 
     return (

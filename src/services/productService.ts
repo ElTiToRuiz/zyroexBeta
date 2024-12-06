@@ -1,4 +1,5 @@
-import { Product } from "../utils/products";
+import { Product } from "../utils/types";
+
 
 // Lógica para aplicar los filtros
 export const applyFiltersToInventory = (
@@ -18,19 +19,19 @@ export const applyFiltersToInventory = (
     }
 
     if (stockQuantityMinFilter !== '') {
-        filteredItems = filteredItems.filter(item => item.stockQuantity >= stockQuantityMinFilter);
+        filteredItems = filteredItems.filter(item => item.stock >= stockQuantityMinFilter);
     }
 
     if (stockQuantityMaxFilter !== '') {
-        filteredItems = filteredItems.filter(item => item.stockQuantity <= stockQuantityMaxFilter);
+        filteredItems = filteredItems.filter(item => item.stock <= stockQuantityMaxFilter);
     }
 
     if (filterOutOfstockQuantity) {
-        filteredItems = filteredItems.filter(item => item.stockQuantity === 0);
+        filteredItems = filteredItems.filter(item => item.stock === 0);
     }
 
     if (filterLowstockQuantity) {
-        filteredItems = filteredItems.filter(item => item.stockQuantity > 0 && item.stockQuantity <= item.threshold);
+        filteredItems = filteredItems.filter(item => item.stock > 0 && item.stock <= item.threshold);
     }
 
     return filteredItems;

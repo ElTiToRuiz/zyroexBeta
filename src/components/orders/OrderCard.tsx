@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { OrderModal } from './OrderCardModal';
 import { UrgentConfirmation } from './MakeUrgent';
-import { Order } from '../../context/orderContext';
+import { Order } from '../../utils/types';
 
 
 export const getStatusBGColor = (status: string) => {

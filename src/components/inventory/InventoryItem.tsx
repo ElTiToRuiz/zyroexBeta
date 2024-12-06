@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { EditableForm } from './InventoryItemEditable';
-import { Product } from '../../utils/products';
+import { Product } from '../../utils/types';
 
 export const InventoryItem = ({product}:{product:Product}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const isLowStock = product.stockQuantity > 0 && product.stockQuantity <= product.threshold;
-    const isOutOfStock = product.stockQuantity === 0;
+    const isLowStock = product.stock > 0 && product.stock <= product.threshold;
+    const isOutOfStock = product.stock === 0;
 
     // Handle opening and closing the modal
     const handleClick = () => setIsModalOpen(true);
@@ -37,12 +37,12 @@ export const InventoryItem = ({product}:{product:Product}) => {
                         Price: <span className="font-bold">${product.price}</span>
                     </p>
                     <p className="text-gray-600 mt-2">
-                        Stock: <span className="font-bold">{product.stockQuantity}</span>
+                        Stock: <span className="font-bold">{product.stock}</span>
                     </p>
 
                     {isLowStock && (
                         <p className="mt-2 text-yellow-600 font-medium">
-                            ⚠️ Low Stock! Only {product.stockQuantity} items left.
+                            ⚠️ Low Stock! Only {product.stock} items left.
                         </p>
                     )}
                     {isOutOfStock && (

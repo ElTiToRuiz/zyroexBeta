@@ -1,10 +1,11 @@
 import { IoCloseSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import { TeamStats } from "./TeamStats";
-import { useAuthUser, User } from "../../context/authContext";
+import { useAuthUser } from "../../context/authContext";
 import { useTeams } from "../../context/teamContext";
 import { AssignOrdersToTeam } from "./AssignOrder";
 import { OrdersProvider } from "../../context/orderContext";
+import { User } from "../../utils/types";
 // Define the TeamDetailsProps interface
 interface TeamDetailsProps {
     goBack: () => void;

@@ -17,10 +17,32 @@ export const DashboardContainer = ({dashboardInfo}:{dashboardInfo:DashboardInfo}
 
 
 	return (
-		<div className="min-h-screen bg-gray-50 p-8 overflow-hidden">
+		<div className="min-h-screen bg-gray-50 p-8">
 			<h1 className="text-4xl font-bold text-gray-800 mb-8">
 				Welcome, <span className="text-blue-600">{authUser.username}</span>!
 			</h1>
+
+			<div className="flex flex-wrap justify-center mb-8">
+				<div className="bg-yellow-100 p-6 rounded-lg shadow-md mb-6 max-w-4xl w-full">
+					<h3 className="text-xl font-semibold text-yellow-800 mb-4">
+					<span className="block">Note: This is a demo version of the app.</span>
+					<span className="block text-sm text-gray-700 mt-2">
+						Please note that any data you enter or modify in this demo is not saved permanently. 
+						Changes are temporary and will be lost once you refresh or navigate away from the page.
+					</span>
+					<span className="block text-sm text-gray-700 mt-2">
+						Additionally, the data you see in different sections (e.g., orders, products, or user details) is not connected. 
+						Each part of the app functions independently for demonstration purposes and does not reflect any real-time or synchronized data.
+					</span>
+					<span className="block text-sm text-gray-700 mt-2">
+						For access to real-time data and full functionality, please <a href="mailto:ruizigor16@gmail.com" className="text-yellow-600 hover:underline">contact us</a>.
+					</span>
+					</h3>
+				</div>
+			</div>
+
+
+	
 
 			{/* Grid Layout for Cards */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

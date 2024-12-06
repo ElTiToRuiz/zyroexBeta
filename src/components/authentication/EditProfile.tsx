@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { fetchUpdateUserProfile } from "../../services/fetch/fetchUsers";
-import { User } from "../../context/authContext";
+import { User } from "../../utils/types";
+
 
 export const EditProfile = ({user, close}:{user: User, close:()=>void}) => {
     const [newUsername, setNewUsername] = useState(user.username);
@@ -15,7 +15,6 @@ export const EditProfile = ({user, close}:{user: User, close:()=>void}) => {
             return;
         }
         // Add fetch request here
-        await fetchUpdateUserProfile({ id: user.id, username: newUsername, email: newEmail, password: newPassword });
         close(); 
     }
 

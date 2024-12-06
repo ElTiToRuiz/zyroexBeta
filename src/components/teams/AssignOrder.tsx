@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { Order, useOrders } from "../../context/orderContext";
+import { useOrders } from "../../context/orderContext";
 import { useTeams } from "../../context/teamContext";
 import { IoMdAdd } from "react-icons/io";
 import { FaCheck } from "react-icons/fa";
 import { useAuthUser } from "../../context/authContext";
 import { OrderModal } from "../orders/OrderCardModal";
 import { UrgentConfirmation } from "../orders/MakeUrgent";
+import { Order } from "../../utils/types";
 
 export const AssignOrdersToTeam = () => {
-    const { orders, changeOrderTeam} = useOrders();
+    const { orders} = useOrders();
     const { activeTeam } = useTeams();
     const { hasAdminRole } = useAuthUser();
 
@@ -24,14 +25,12 @@ export const AssignOrdersToTeam = () => {
 
     // Handle adding an order to the team
     const handleAddOrder = (order: Order) => {
-        changeOrderTeam({orderId: order.id, teamId: activeTeam.id, add: true});
         setTeamOrder(prev => [...prev, order]);
         setRestOrder(prev => prev.filter(o => o.id !== order.id));
     };
 
     // Handle removing an order from the team
     const handleRemoveOrder = (order: Order) => {
-        changeOrderTeam({orderId: order.id, teamId: activeTeam.id, add: false});
         setTeamOrder(prev => prev.filter(o => o.id !== order.id));
         setRestOrder(prev => [...prev, order]);
     };

@@ -1,8 +1,7 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { User } from './authContext';
-import { fetchCreateUser, fetchDeleteUser, fetchGetAllUser, fetchUpdateUser } from '../services/fetch/fetchUsers';
-import { socket } from '../services/sockets/socket';
-import { handleDeleteUser, handleNewUser, handleUpdateUser } from '../services/sockets/userSocket';
+import { User } from '../utils/types';
+import { allUsers } from '../utils/data/usersData';
+
 interface UserContextType {
     users: User[];
     loading: boolean;
@@ -25,24 +24,11 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         fetchUsers();
     }, []);
 
-    useEffect(() => {
-        const handleNewUserEvent = (newUser: User) => handleNewUser({user: newUser, userList: users, setUserList: setUsers});
-        const handleUpdateUserEvent = (updatedUser: User) => handleUpdateUser({user: updatedUser, userList: users, setUserList: setUsers});
-        const handleDeleteUserEvent = (deletedUser: User) => handleDeleteUser({user: deletedUser, userList: users, setUserList: setUsers});
-        socket.on('new-user', handleNewUserEvent);
-        socket.on('update-user', handleUpdateUserEvent);
-        socket.on('delete-user', handleDeleteUserEvent);
-        return () => {
-            socket.off('new-user', handleNewUserEvent);
-            socket.off('update-user', handleUpdateUserEvent);
-            socket.off('delete-user', handleDeleteUserEvent);
-        }
-    }, [users]);
 
     // Función para obtener todos los usuarios
     const fetchUsers = async () => { 
         try {
-            const response = await fetchGetAllUser();
+            const response = allUsers;
             setUsers(response);
             setLoading(false);
         } catch (error) { 
@@ -53,7 +39,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const updateUser = async (newUser: User) => {
         try {
-            await fetchUpdateUser(newUser);
+            const updatedUsers = users.map(user => user.id === newUser.id ? newUser : user);
+            setUsers(updatedUsers);
         } catch (error) {
             alert('Error updating user');
         } 
@@ -61,7 +48,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const createNewUser = async (newUser: User) => {
         try {
-            await fetchCreateUser(newUser);
+            const newUsers = [...users, newUser];
+            setUsers(newUsers);
         } catch (error) {
             alert('Error creating user');
         }
@@ -69,7 +57,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     const deleteUser = async (user: User) => {
         try {
-            await fetchDeleteUser(user);
+            const newUsers = users.filter(u => u.id !== user.id);
+            setUsers(newUsers);
         } catch (error) {
             alert('Error deleting user');
         }

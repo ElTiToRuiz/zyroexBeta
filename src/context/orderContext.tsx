@@ -1,24 +1,9 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from "react";
-import { fetchAssignOrder, fetchGetRevenue, fetchMakeOrderUrgent, fetchOrderProducts, fetchUnassignOrder, getOrders, saveOrderStatus } from "../services/fetch/fetchOrders";
-import { Product } from "../utils/products";
-import { socket } from "../services/sockets/socket";
-import { handleNewOrder, handleUpdateOrder } from "../services/sockets/orderSocket";
 import { OrdersByStatus } from "../components/orders/OrderTable";
 import { useAuthUser } from "./authContext";
-
-// Define types for Order and context
-export type Order = {
-    id: string;
-    customerName: string;
-    customerEmail: string;
-    customerAddress: string;
-    status: string;
-    urgent: boolean;
-    additionalNotes: string;
-    createdAt: string;
-    assignedTeam: string[];
-};
-
+import { Order, OrderWithProduct, Product } from "../utils/types";
+import { generateOrders } from "../utils/data/generation";
+import { SpecialProduct } from "../components/orders/OrderCardModal";
 
 
 type OrdersContextType = {
@@ -37,7 +22,6 @@ type OrdersContextType = {
     filterByStatus: (filter: string) => Order[];
     setStatus: (status: string) => void;
     makeOrderUrgent: (orderId: string) => void;
-    changeOrderTeam: ({orderId, teamId, add}:handleTeamOrderProps) => void;
     getRevenue: () => Promise<number>;
 };
 
@@ -47,12 +31,6 @@ type OrdersProviderProps = {
     children: ReactNode;
 };
 
-type handleTeamOrderProps = {
-    orderId: string;
-    teamId: string;
-    add: boolean;
-}
-
 export const OrdersProvider = ({ children }:OrdersProviderProps) => {
     const [orderList, setOrderList] = useState<Order[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<Order[]>(orderList);
@@ -61,7 +39,7 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
     const [error, setError] = useState<string | null>(null);
     const [status, setStatus] = useState<string>("All");
     const [urgent, setUrgent] = useState<boolean>(false);
-    const {authUser, hasAdminRole} = useAuthUser()
+    const {authUser} = useAuthUser()
 
     const sortOrders = (orders: Order[]) => {
         const statusOrder: { [key: string]: number } = {
@@ -138,17 +116,6 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
         fetchOrders();
     }, []);
 
-    useEffect(() => {
-        const handleNewOrderEvent = (order: Order) => handleNewOrder({order, orderList, setOrderList});
-        const handleUpdateOrderEvent = (order: Order) => handleUpdateOrder({order, orderList, setOrderList});
-        socket.on('new-order', handleNewOrderEvent);
-        socket.on('update-order', handleUpdateOrderEvent);
-
-        return () => {
-            socket.off('new-order', handleNewOrderEvent);
-            socket.off('update-order', handleUpdateOrderEvent);
-        }   
-    }, [orderList]);
 
     useEffect(() => {
         setFilteredByStatus(rowFilter());
@@ -162,7 +129,7 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
     const fetchOrders = async () => {
         try{
             if(!authUser) return;
-            const response = await getOrders(() => hasAdminRole(), authUser);
+            const response = generateOrders(10);
             setOrderList(response);
             setFilteredOrders(response);
             setFilteredByStatus(rowFilter());
@@ -174,20 +141,17 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
     } 
 
     const getProductsFromOrder = async (order: Order) => {
-        const products = await fetchOrderProducts(order);
-        console.log(products);
-        type OrderWithProduct = {
-            product: Product;
-            quantity: number;
-        }
-        
-        const productList:Product[] = products.map((product: OrderWithProduct) => { 
+        const products = order.products;
+        const productList:SpecialProduct[] = products.map((product:OrderWithProduct) => { 
             return {
                 id: product.product.id,
                 name: product.product.name,
                 quantity: product.quantity,
                 price: product.product.price,
-                stockQuantity: product.product.stockQuantity,
+                stockQuantity: product.product.stock,
+                sku: product.product.sku,
+                stock: product.product.stock,
+                threshold: product.product.threshold,
             }
         })
 
@@ -196,32 +160,31 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
 
     const saveStatusChange = async ({order, newValue}: {order: Order, newValue: string}) => {
         console.log(order, newValue);
-        await saveOrderStatus({id: order.id, newValue});
+        order.status = newValue;
+        setOrderList([...orderList]);
     }
 
     const makeOrderUrgent = async (orderId: string) => {
         console.log(orderId);
-        await fetchMakeOrderUrgent(orderId);
-    }
-
-    const changeOrderTeam = async ({orderId, teamId, add}:handleTeamOrderProps) => {
-        if(add){
-            console.log('add order to team');
-            await fetchAssignOrder({orderId, teamId});
-        }else{
-            await fetchUnassignOrder({orderId, teamId});
-            console.log('remove order from team');
+        const order = orderList.find(order => order.id === orderId);
+        if(order){
+            order.urgent = !order.urgent;
+            setOrderList([...orderList]);
         }
     }
 
     const getRevenue = async() => {
-        const total = await fetchGetRevenue();
+        const total = orderList.map(order => {
+            return order.products.reduce((acc, product) => {
+                return acc + product.quantity * product.product.price;
+            }, 0);
+        }).reduce((acc, value) => acc + value, 0);
         return total;
-
     }
+
     return (
         <OrdersContext.Provider
-            value={{orders: orderList,urgent,filteredOrders,filteredByStatus, loading, error, setUrgent, filterOrders,rowFilter, resetFilters, getProductsFromOrder, saveStatusChange, filterByStatus, setStatus, makeOrderUrgent, changeOrderTeam, getRevenue}}
+            value={{orders: orderList,urgent,filteredOrders,filteredByStatus, loading, error, setUrgent, filterOrders,rowFilter, resetFilters, getProductsFromOrder, saveStatusChange, filterByStatus, setStatus, makeOrderUrgent, getRevenue}}
         >
             {children}
         </OrdersContext.Provider>

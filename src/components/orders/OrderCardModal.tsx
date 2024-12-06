@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Product } from '../../utils/products';
-import { Order, useOrders } from '../../context/orderContext';
+import { Order, Product } from '../../utils/types';
+import { useOrders } from '../../context/orderContext';
+
+export type SpecialProduct = Product & { quantity: number, stock: number };
 
 export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: () => void, openUrgent: ()=>void}) => {
     const [orderStatus, setOrderStatus] = useState(order.status);
-    const [products, setProducts] = useState<Product[]>([]); 
+    const [products, setProducts] = useState<SpecialProduct[]>([]); 
     const { getProductsFromOrder, saveStatusChange } = useOrders();
     const urgentAcceptStatus = ['pending', 'processing']
     
@@ -15,7 +17,7 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
     useEffect(() => { 
         const fetchProducts = async () => {
             const products = await getProductsFromOrder(order);
-            setProducts(products);
+            setProducts(products as SpecialProduct[]);
         };
         fetchProducts();
     }, [order]);
@@ -28,7 +30,7 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
         close();
     };
 
-    const calculateTotal = () => products.reduce((total, product) => total + (product.quantity ?? 0) * product.price, 0);
+    const calculateTotal = () => order.products.reduce((acc, product) => acc + (product.quantity * product.product.price), 0);
     
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
@@ -88,10 +90,10 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
                     <p className="text-lg font-semibold">Products</p>
                     <div className='pt-1 pb-2'>
                         {
-                            products.map((product: Product) => (
+                            products.map((product: SpecialProduct) => (
                                 <div key={product.id} className="flex justify-between text-sm text-gray-800">
-                                    <span >{product.quantity} x {product.name}</span>
-                                    <span className='text-gray-400'> Avalaible in Stock - {product.stockQuantity} </span>
+                                    <span >{product.price} x {product.name}</span>
+                                    <span className='text-gray-400'> Avalaible in Stock - {product.stock} </span>
                                     <span className="text-gray-500">${((product.quantity ?? 0) * product.price).toFixed(2)}</span>
                                 </div>
                             ))

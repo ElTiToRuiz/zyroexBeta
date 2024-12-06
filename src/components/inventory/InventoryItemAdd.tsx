@@ -41,7 +41,7 @@ export const InventoryItemAdd = () => {
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		try{
-			addInventoryItem(image ? URL.createObjectURL(image) : "", itemName, sku, parseFloat(price), stock, threshold);
+			addInventoryItem(itemName, sku, parseFloat(price), stock, threshold);
 			clean();
 			setIsModalOpen(false);
 		}catch(e){ 

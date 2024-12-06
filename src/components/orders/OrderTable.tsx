@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { getStatusBGColor, OrderCard } from "./OrderCard";
-import { Order, useOrders } from '../../context/orderContext';
+import { useOrders } from '../../context/orderContext';
+import { Order } from '../../utils/types';
 
 export interface Status {
     statusId: string;

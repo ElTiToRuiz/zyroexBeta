@@ -1,6 +1,5 @@
-import { Order, useOrders } from "../../context/orderContext"
-import { Shipment } from "../shipment/ShipmentContainer"
-
+import { useOrders } from "../../context/orderContext"
+import { Order, Shipment } from "../../utils/types"
 
 type UrgentConfirmationProp ={
     order?: Order

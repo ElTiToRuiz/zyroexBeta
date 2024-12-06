@@ -1,4 +1,4 @@
-import { Shipment } from "./ShipmentContainer";
+import { Shipment } from "../../utils/types";
 import { getStatusColor } from "./ShipmentDetails";
 
 interface ShipmentListProps {

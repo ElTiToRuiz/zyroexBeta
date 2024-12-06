@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { TeamFormModal } from "./TeamModal";
 import { TeamDetails } from "./TeamDetails";
-import { Team, useTeams } from "../../context/teamContext";
+import { useTeams } from "../../context/teamContext";
 import { useAuthUser } from "../../context/authContext";
 import { FaPen } from "react-icons/fa";
+import { Team } from "../../utils/types";
 
 type teamCache = {
     team: Team | null;

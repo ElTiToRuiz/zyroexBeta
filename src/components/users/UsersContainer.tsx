@@ -3,7 +3,8 @@ import { useUserContext } from '../../context/userContext';
 import { Loading } from '../main/Loading';
 import { CreateUser } from './UserCreate';
 import { EditUser } from './UserEdit';
-import { useAuthUser, User } from "../../context/authContext";
+import { useAuthUser } from "../../context/authContext";
+import { User } from '../../utils/types';
 
 
 export const UserContainer = () => {

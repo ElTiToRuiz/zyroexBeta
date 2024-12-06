@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useInventory } from "../../context/InventoryContext";
 import { useAuthUser } from "../../context/authContext";
-import { Product } from "../../utils/products";
+import { Product } from "../../utils/types";
   
 export const EditableForm = ({product, onClose}:{product:Product, onClose: ()=>void}) => {
     const [newName, setNewName] = useState(product.name);
     const [newSku, setNewSku] = useState(product.sku);
     const [newPrice, setNewPrice] = useState(product.price);
-    const [newStock, setNewStock] = useState(product.stockQuantity); 
+    const [newStock, setNewStock] = useState(product.stock); 
     const [newThreshold, setNewThreshold] = useState(product.threshold);
     const [error, setError] = useState<string | null>(null);
     

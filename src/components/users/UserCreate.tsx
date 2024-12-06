@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUserContext } from "../../context/userContext";
-import { User } from "../../context/authContext";
+import { User } from "../../utils/types";
 
 type newUser = {
     username: string;

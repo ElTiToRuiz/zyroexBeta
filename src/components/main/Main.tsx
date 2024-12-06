@@ -15,7 +15,6 @@ import { ConfigurationPage } from "../configuration/ConfigurationView";
 import { PendingUserDashboard } from "../dashboard/DashboardPending";
 import { TeamProvider } from "../../context/teamContext";
 import { NotificationPopup } from "./NotificationPopup";
-import { NotificationProvider } from "../../context/notificationContext";
 import { useAuthUser } from "../../context/authContext";
 import { Error } from "./Error";
 import { Dashboard } from "../dashboard/DashboradMain";
@@ -39,8 +38,7 @@ export const MainApp = () => {
     if(!authUser) return null;
   
     return (
-        <NotificationProvider>
-            <main className={`h-screen  ${isOpen ? "grid grid-cols-[auto_1fr]" :  "container"}`}>
+        <main className={`h-screen  ${isOpen ? "grid grid-cols-[auto_1fr]" :  "container"}`}>
                 {isOpen && <Sidebar isOpen={isOpen} />}
 
                 <section className="flex overflow-auto flex-col w-full">
@@ -84,14 +82,15 @@ export const MainApp = () => {
                         }/>
 
                         <Route path="/shipments" element={
-                            hasAdminRole() ? <ShipmentsPage/> : <Navigate to="/unauthorized" />                                
-                        }/>
+                            hasAdminRole() ? 
+                            <OrdersProvider>
+                                <ShipmentsPage/>                               
+                            </OrdersProvider> : <Navigate to="/unauthorized" />  
+                        }/> 
 
                         <Route path="/notifications" element={
-                            authUser?.role === 'pending' ? <Navigate to="/unauthorized" /> :
-                            <NotificationProvider>
-                                <NotificationContainer/>
-                            </NotificationProvider>
+                            authUser?.role === 'pending' ? <Navigate to="/unauthorized" /> : <NotificationContainer/>
+                           
                         }/>
 
                         <Route path="/configuration" element={
@@ -112,7 +111,6 @@ export const MainApp = () => {
                 }
                     
             </main>
-        </NotificationProvider>
     );
 }
 

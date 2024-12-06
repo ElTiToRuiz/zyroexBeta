@@ -1,5 +1,4 @@
-
-import { useNotification } from '../../context/notificationContext';
+import { notifications } from '../../utils/data/notificationData';
 import { parseDateToLocal } from '../authentication/ProfileContainer';
 
 
@@ -20,9 +19,7 @@ const fixPriotity = (priority: string) => {
 }
 
 export const NotificationContainer = () => {
-    const {notifications} = useNotification();
 
-  
     return (
       <div className="p-6">
         <h1 className="text-2xl mb-4">Notification Center</h1>
@@ -63,4 +60,6 @@ export const NotificationContainer = () => {
         </div>
       </div>
     );
-  };
+};
+
+

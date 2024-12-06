@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { SummaryStats } from "./SummaryStats";
 import { ChartCard } from "./ChartCard";
 import { OrdersProvider, useOrders } from "../../context/orderContext";
-import { fetchOrderTrends } from "../../services/fetch/fetchStats";
 import { topProductChartConfig } from "../../utils/charts/topProducts";
 import { orderTrendsChartConfig } from "../../utils/charts/orderTrends";
 import { orderStateChartConfig } from "../../utils/charts/orderState";
 import { teamMembersChartConfig } from "../../utils/charts/teamMembers";
+import { statsData } from "../../utils/charts/StatsData";
 
 
 export const Statistics = () => {
@@ -36,7 +36,7 @@ const StatisticsDashboard = () => {
 
 	useEffect(() => {
 		(async () => { 
-			const data = await fetchOrderTrends();
+			const data = statsData
 			setOrderTrendsData({
 				labels: data.totalOrdersEachWeek.labels,
 				data: data.totalOrdersEachWeek.data,
@@ -79,10 +79,14 @@ const StatisticsDashboard = () => {
 		<div className="p-8 bg-gray-50 min-h-screen">
 			<h1 className="text-3xl font-bold text-gray-800">Statistics Dashboard</h1>
 			<p className="text-gray-600 mt-1 mb-10">Monitor key metrics and performance at a glance.</p>
-
-			{/* Filters */}
-			{/* <Filters onApply={handleFiltersApply} /> */}
-
+			<div className="bg-yellow-100 p-4 rounded-lg mb-6">
+				<h3 className="text-lg font-semibold text-yellow-800">
+					Note: The data displayed is for demonstration purposes only and may not reflect actual statistics.
+					<span className="block text-md text-gray-700 mt-2">
+						For access to real-time data and full functionality, please <a href="mailto:ruizigor16@gmail.com" className="text-yellow-600 hover:underline">contact us</a>.
+					</span>
+				</h3>
+			</div>
 			{/* Summary Stats */}
 			<SummaryStats stats={stats} />
 

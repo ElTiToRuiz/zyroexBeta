@@ -1,29 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ShipmentList } from './ShipmentList';
 import { ShipmentDetails } from './ShipmentDetails';
-import { socket } from '../../services/sockets/socket';
-import { mainEndpoint } from '../../utils/endpoints';
+import { Shipment } from '../../utils/types';
+import { genereateShipments } from '../../utils/data/generation';
+import { useOrders } from '../../context/orderContext';
 
-export interface Shipment {
-    id: string;
-    orderId: string;
-    trackingNumber: string;
-    shipmentStatus: string;
-    orderDate: Date;
-    previstedDeliveryDate: Date;
-    clientName: string;
-    clientEmail: string;
-    clientAddress: string;
-    additionalNotes: string;
-    urgent: boolean;
-}
-
-const fetchDelivery = async () => {
-    const ENDPOINT = `${mainEndpoint}/shipments`;
-    const response = await fetch(ENDPOINT);
-    const data = await response.json();
-    return data;
-}
 
 const sortShipment = (data: Shipment[]): Shipment[] => {
     const statusOrder: { [key: string]: number } = {
@@ -47,44 +28,18 @@ export const ShipmentsPage = () => {
     const [selectedShipment, setSelectedShipment] = useState<string | null>(null);
     const [showForm, setShowForm] = useState<boolean>(false);
     const [shipments, setShipments] = useState<Shipment[]>([]);
-    
+    const { orders } = useOrders();
 
     useEffect(() => {
-        fetchDelivery()
-            .then(data => setShipments(sortShipment(data)))
-            .catch(error => console.error(error))
+        const shipmentsData = genereateShipments(orders);
+        setShipments(sortShipment(shipmentsData));
     },[]);
-
-    const handleNewShipment = (newShipment: Shipment) => {
-        setShipments(sortShipment([...shipments, newShipment])); 
-    }
-
-    const handleShipmentChange = (updatedShipment: Shipment) => {
-        if (!shipments || shipments.length === 0) return setShipments([updatedShipment]);
-        const shipmentIndex = shipments.findIndex(shipment => shipment.id === updatedShipment.id);
-        if (shipmentIndex === -1) return;
-        const updatedShipments = shipments.map((shipment, index) => index === shipmentIndex ? updatedShipment : shipment);
-        setShipments(sortShipment(updatedShipments));
-    };
-
-    useEffect(() => {
-        const handleNewShipmentEvent = (newShipment: Shipment) => handleNewShipment(newShipment);
-        const handleShipmentChangeEvent = (updatedShipment: Shipment) => handleShipmentChange(updatedShipment);
-        socket.on('new-shipment', handleNewShipmentEvent);
-        socket.on('update-shipment', handleShipmentChangeEvent);
-        return () => {
-            socket.off('new-shipment', handleNewShipmentEvent);
-            socket.off('update-shipment', handleShipmentChangeEvent);
-        }
-    }, [shipments]);
-
 
     // Handle selecting a shipment to view details
     const handleSelectShipment = (id: string) => {
         setSelectedShipment(id);
         setShowForm(false);
     };
-
 
     // Handle going back to the list of shipments
     const handleBackToList = () => {

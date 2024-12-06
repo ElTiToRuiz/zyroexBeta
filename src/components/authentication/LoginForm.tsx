@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAuthUser } from "../../context/authContext";
-import { fetchForgotPassword } from "../../services/fetch/fetchSupport";
 
 
 export const LoginForm = () => {
@@ -23,8 +22,6 @@ export const LoginForm = () => {
 			alert('Please enter your email to reset your password.');
 			return;
 		}
-		const data = await fetchForgotPassword(email.value);
-		alert(data.message);
 	}
 
 	return (

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { InventoryProvider, useInventory } from "../../context/InventoryContext"
-import { NotificationProvider, useNotification } from "../../context/notificationContext"
 import { OrdersProvider, useOrders } from "../../context/orderContext"
 import { TeamProvider } from "../../context/teamContext"
 import { UserProvider, useUserContext } from "../../context/userContext"
@@ -11,11 +10,9 @@ export const Dashboard = () => {
         <OrdersProvider>
             <UserProvider>
                 <TeamProvider>
-                    <NotificationProvider>
-                        <InventoryProvider>
-                            <DashboardUtils />
-                        </InventoryProvider>
-                    </NotificationProvider>
+                    <InventoryProvider>
+                        <DashboardUtils />
+                    </InventoryProvider>
                 </TeamProvider>
             </UserProvider>
         </OrdersProvider>
@@ -44,8 +41,7 @@ export type AdminAdditionalDashboardInfo = {
 const DashboardUtils =  () => {
     const [dashboardInfo, setDashboardInfo] = useState<DashboardInfo | null>(null);
     const {orders, getRevenue} = useOrders();
-    const {inventory} = useInventory(); 
-    const {notifications} = useNotification();
+    const {inventory} = useInventory();
     const {users} = useUserContext();
     
     const getDashboardInfo = async ()=>  {
@@ -54,15 +50,15 @@ const DashboardUtils =  () => {
             pendingOrders: orders.filter(order => order.status === 'pending').length,
             completedOrders: orders.filter(order => order.status === 'completed').length,
             revenue: await getRevenue(),
-            lowStockAlert: inventory.filter(product => product.stockQuantity < product.threshold && product.stockQuantity !== 0).length,
-            noStockAlert: inventory.filter(product => product.stockQuantity === 0).length,
+            lowStockAlert: inventory.filter(product => product.stock < product.threshold && product.stock !== 0).length,
+            noStockAlert: inventory.filter(product => product.stock === 0).length,
             totalUsers: users.length,
             pendingUsers: users.filter(user => user.role === 'pending').length,
             recentActivities: [
-                notifications[0]?.message,
-                notifications[1]?.message,
-                notifications[2]?.message,
-                notifications[3]?.message
+                'New order received',
+                'Inventory updated',
+                'New user registered',
+                'Order Id #1234 completed',
             ],
             ordersLastWeek: orders.filter(order => new Date(order.createdAt).getTime() > new Date().getTime() - 7 * 24 * 60 * 60 * 1000).length,
             ordersLastDay: orders.filter(order => new Date(order.createdAt).getTime() > new Date().getTime() - 24 * 60 * 60 * 1000).length
@@ -71,7 +67,7 @@ const DashboardUtils =  () => {
    
     useEffect(() => {
         getDashboardInfo().then((data) => setDashboardInfo(data));
-    }, [orders, inventory, notifications, users]);
+    }, [orders, inventory, users]);
 
     return (
         dashboardInfo ? <DashboardContainer dashboardInfo={dashboardInfo} /> : <div>Loading...</div>

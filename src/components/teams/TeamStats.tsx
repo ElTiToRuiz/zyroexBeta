@@ -1,4 +1,5 @@
-import { User } from "../../context/authContext";
+import { User } from "../../utils/types";
+
 
 
 export const TeamStats = ({members}: {members:User[]}) => {

@@ -1,6 +1,7 @@
 import { IoCloseSharp } from "react-icons/io5";
-import { Team, useTeams } from "../../context/teamContext";
+import { useTeams } from "../../context/teamContext";
 import { useState } from "react";
+import { Team } from "../../utils/types";
 
 interface TeamFormModalProps {
     closeModal: () => void;

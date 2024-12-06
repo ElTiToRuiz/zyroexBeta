@@ -2,9 +2,9 @@ import { Line, Bar, Pie, Radar, Doughnut } from "react-chartjs-2";
 import "chart.js"
 
 interface ChartCardProps {
-  title: string;
-  data: any;
-  type: string
+    title: string;
+    data: any;
+    type: string
 }
 
 import {
@@ -35,20 +35,167 @@ ChartJS.register(
     Legend
 );
 
+const formatPercentage = (value: number, total: number) => {
 
-export const ChartCard: React.FC<ChartCardProps> = ({ title, data, type }) => {
+    return ((value / total) * 100).toFixed(2) + '%';
+};
+
+export const ChartCard: React.FC<ChartCardProps> = ({ title, data, type} ) => {
     const renderChart = () => {
         switch (type) {
             case "line":
-                return <Line data={data} />;
+                return <Line data={data} options={{
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            mode: "nearest",
+                            intersect: false,
+                            backgroundColor: "rgba(0, 0, 0, 0.7)",
+                            callbacks: {
+                                title: (tooltipItem: any) => `Date: ${tooltipItem[0].label}`,
+                                label: (tooltipItem: any) => `Value: ${tooltipItem.raw}`,
+                            },
+                        },
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: true,
+                                color: "rgba(0, 0, 0, 0.1)",
+                                lineWidth: 1,
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12,
+                                    family: "'Arial', sans-serif",
+                                    weight: "bold",
+                                },
+                            },
+                        },
+                        y: {
+                            grid: {
+                                display: true,
+                                color: "rgba(0, 0, 0, 0.1)",
+                                lineWidth: 1,
+                            },
+                            ticks: {
+                                font: {
+                                    size: 12,
+                                    family: "'Arial', sans-serif",
+                                    weight: "bold",
+                                },
+                                maxTicksLimit: 5,
+                            },
+                        },
+                    },
+                    hover: {
+                        mode: "nearest",
+                        intersect: true,
+                    },
+                    elements: {
+                        line: {
+                            borderWidth: 4,
+                            borderCapStyle: "round",
+                        },
+                        point: {
+                            radius: 6,
+                            hitRadius: 10,
+                        },
+                    },
+                    animation: {
+                        duration: 1200,
+                        easing: "easeOutQuad",
+                    },
+                }}/>;
             case "bar":
-                return <Bar data={data} />;
+                return <Bar data={data} options={{
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                enabled: true,
+                                mode: "nearest",
+                                intersect: false,
+                                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                                callbacks: {
+                                    title: (tooltipItem: any) => `Product: ${tooltipItem[0].label}`,
+                                    label: (tooltipItem: any) => `Value: ${tooltipItem.raw}`,
+                                },
+                            },
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    display: true,
+                                    color: "rgba(0, 0, 0, 0.1)",
+                                    lineWidth: 1,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: "'Arial', sans-serif",
+                                        weight: "bold",
+                                    },
+                                },
+                            },
+                            y: {
+                                grid: {
+                                    display: true,
+                                    color: "rgba(0, 0, 0, 0.1)",
+                                    lineWidth: 1,
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 12,
+                                        family: "'Arial', sans-serif",
+                                        weight: "bold",
+                                    },
+                                    maxTicksLimit: 5,
+                                },
+                            },
+                        },
+                        hover: {
+                            mode: "nearest",
+                            intersect: true,
+                        },
+                        animation: {
+                            duration: 1200,
+                            easing: "easeOutQuad",
+                        },
+                    }}/>;
             case "pie":
                 return <Pie data={data} />;
             case "radar":
-                return <Radar data={data} />;
+                return <Radar data={data} options={{
+                    responsive: true,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                        }
+                    }
+                }}/>;                  
             case "doughnut":
-                return <Doughnut data={data} />;
+                return <Doughnut data={data} options={{
+                    responsive: true,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context: any) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed;
+                                        const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
+                                        label += ' (' + formatPercentage(context.parsed, sum(data.datasets[0].data)) + ')';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }} />;
             default:
                 return null;
         }

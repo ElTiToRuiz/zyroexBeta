@@ -1,6 +1,5 @@
 // Support.tsx
 import React, { useState } from 'react';
-import { sendEmail } from '../../services/fetch/fetchSupport';
 
 
 export const Support = ({close}:{close:()=>void}) => {
@@ -9,7 +8,6 @@ export const Support = ({close}:{close:()=>void}) => {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		sendEmail(bugTitle, bugDescription);
 		setBugTitle('');
 		setBugDescription('');
 		close()

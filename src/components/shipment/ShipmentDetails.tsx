@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Shipment } from "./ShipmentContainer";
 import { correctStatus } from "./ShipmentList";
 import { UrgentConfirmation } from "../orders/MakeUrgent";
+import { Shipment } from "../../utils/types";
 
 
 // Utility function to format the date as a string
