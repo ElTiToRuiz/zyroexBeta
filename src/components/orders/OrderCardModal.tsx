@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Order, Product } from '../../utils/types';
 import { useOrders } from '../../context/orderContext';
+import { useSettings } from '../../context/settingContext';
 
 export type SpecialProduct = Product & { quantity: number, stock: number };
 
@@ -8,8 +9,8 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
     const [orderStatus, setOrderStatus] = useState(order.status);
     const [products, setProducts] = useState<SpecialProduct[]>([]); 
     const { getProductsFromOrder, saveStatusChange } = useOrders();
-    const urgentAcceptStatus = ['pending', 'processing']
-    
+    const urgentAcceptStatus = ['pending', 'processing'];
+    const { currencySymbol } = useSettings();
     const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setOrderStatus(event.target.value);
     };
@@ -21,7 +22,6 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
         };
         fetchProducts();
     }, [order]);
-
 
     const saveChanges = () => {
         // Save changes to the order
@@ -92,16 +92,33 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
                         {
                             products.map((product: SpecialProduct) => (
                                 <div key={product.id} className="flex justify-between text-sm text-gray-800">
-                                    <span >{product.price} x {product.name}</span>
+                                    <span >
+                                        {
+                                            currencySymbol === '€' ? `${product.quantity} x ${product.name} - ${product.price} ${currencySymbol}` :
+                                            `${product.quantity} x ${product.name} - ${currencySymbol}${product.price}`
+                                        }
+                                    </span>
                                     <span className='text-gray-400'> Avalaible in Stock - {product.stock} </span>
-                                    <span className="text-gray-500">${((product.quantity ?? 0) * product.price).toFixed(2)}</span>
+                                    <span className="text-gray-500">
+                                        {
+                                            currencySymbol === '€' ? `${(product.quantity * product.price).toFixed(2)} ${currencySymbol}` :
+                                            `${currencySymbol}${(product.quantity * product.price).toFixed(2)}`
+                                        }
+                                    </span>
                                 </div>
                             ))
                         } 
                     </div>
                     <div className="flex justify-between text-sm text-gray-800 pt-2 border-t-2">
                         <span className='text-3xl'>Total</span>
-                        <span className="text-gray-900 text-3xl font-semibold">${calculateTotal().toFixed(2)}</span>
+                        <span className="text-gray-900 text-3xl font-semibold">
+                            {
+                                currencySymbol === '€' ? `${calculateTotal().toFixed(2)} ${currencySymbol}` :
+                                `${currencySymbol}${calculateTotal().toFixed(2)}`
+
+                            }
+                            
+                        </span>
                     </div>
                 </div>
 

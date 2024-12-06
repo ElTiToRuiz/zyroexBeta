@@ -4,12 +4,14 @@ import { useAuthUser } from "../../context/authContext";
 import { Error } from "../main/Error";
 import { DashboardInfo } from "./DashboradMain";
 import { IoIosWarning } from "react-icons/io";
+import { useSettings } from "../../context/settingContext";
 
 export const DashboardContainer = ({dashboardInfo}:{dashboardInfo:DashboardInfo}) => {
 	
 	const navigate = useNavigate();
 
 	const { authUser, hasAdminRole, hasSuperAdminRole } = useAuthUser();
+	const {getCurrencyChange} = useSettings();
 
 	if (!authUser) {
         return <Error message="You must be logged in to access your profile." id="auth-error-001" />;
@@ -25,18 +27,21 @@ export const DashboardContainer = ({dashboardInfo}:{dashboardInfo:DashboardInfo}
 			<div className="flex flex-wrap justify-center mb-8">
 				<div className="bg-yellow-100 p-6 rounded-lg shadow-md mb-6 max-w-4xl w-full">
 					<h3 className="text-xl font-semibold text-yellow-800 mb-4">
-					<span className="block">Note: This is a demo version of the app.</span>
-					<span className="block text-sm text-gray-700 mt-2">
-						Please note that any data you enter or modify in this demo is not saved permanently. 
-						Changes are temporary and will be lost once you refresh or navigate away from the page.
-					</span>
-					<span className="block text-sm text-gray-700 mt-2">
-						Additionally, the data you see in different sections (e.g., orders, products, or user details) is not connected. 
-						Each part of the app functions independently for demonstration purposes and does not reflect any real-time or synchronized data.
-					</span>
-					<span className="block text-sm text-gray-700 mt-2">
-						For access to real-time data and full functionality, please <a href="mailto:ruizigor16@gmail.com" className="text-yellow-600 hover:underline">contact us</a>.
-					</span>
+						<span className="block">Note: This is a demo version of the app.</span>
+						<span className="block text-sm text-gray-700 mt-2">
+							Please note that any data you enter or modify in this demo is not saved permanently. 
+							Changes are temporary and will be lost once you refresh or navigate away from the page.
+						</span>
+						<span className="block text-sm text-gray-700 mt-2">
+							Additionally, the data you see in different sections (e.g., orders, products, or user details) is not connected. 
+							Each part of the app functions independently for demonstration purposes and does not reflect any real-time or synchronized data.
+						</span>
+						<span className="block text-sm text-gray-700 mt-2">
+							For access to real-time data and full functionality, please <a href="mailto:ruizigor16@gmail.com" className="text-yellow-600 hover:underline">contact us</a>.
+						</span>
+						<span className="block text-sm text-gray-700 mt-2">
+							As this is a demo version, there may be some bugs or issues. If you find any, please <a href="mailto:ruizigor16@gmail.com" className="text-yellow-600 hover:underline">report them</a>.
+						</span>
 					</h3>
 				</div>
 			</div>
@@ -77,7 +82,7 @@ export const DashboardContainer = ({dashboardInfo}:{dashboardInfo:DashboardInfo}
 									<FaDollarSign className="text-green-600" />
 									<span>Revenue</span>
 								</div>
-								<span className="text-gray-900 font-semibold">$ {dashboardInfo.revenue.toFixed(2)}</span>
+								<span className="text-gray-900 font-semibold">{getCurrencyChange({ number: dashboardInfo.revenue })}</span>
 							</div>
 						}
 

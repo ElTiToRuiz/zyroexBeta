@@ -10,6 +10,7 @@ export const Support = ({close}:{close:()=>void}) => {
 		e.preventDefault();
 		setBugTitle('');
 		setBugDescription('');
+		alert('For demonstration purposes, this feature is currently disabled. Please contact support directly.');
 		close()
 	}
 
@@ -17,6 +18,19 @@ export const Support = ({close}:{close:()=>void}) => {
 		<div className="container mx-auto p-6">
 			<div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
 				<div className="bg-white p-6 rounded-lg w-full max-w-lg">
+					
+					<div className="bg-red-100 p-6 rounded-lg mb-6 border-l-4 border-red-500">
+						<h3 className="text-lg font-semibold text-red-800 mb-2">
+							Warning: This feature is currently not functioning as expected.
+						</h3>
+						<p className="text-red-700 text-md mb-4">
+							If you're encountering issues or would like to report a bug, please <a href="mailto:ruizigor16@gmail.com" className="text-red-600 hover:underline">contact us</a>. 
+						</p>
+						<p className="text-red-700 text-sm">
+							Please note, the component displayed is for demonstration purposes only.
+						</p>
+					</div>
+
 					<h3 className="text-xl font-semibold mb-4">Submit a Bug or Request</h3>
 					<form onSubmit={handleSubmit}>
 					<div className="mb-4">

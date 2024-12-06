@@ -50,6 +50,8 @@ const defaultSettings: Settings = {
 type SettingsContextType = {
     settings: Settings|undefined; 
     isInitialized: boolean;
+    currencySymbol: string;
+    getCurrencyChange: ({number}: {number: number}) => string;
     updateNotificationSetting: (newSettings: SettingNotification) => void;
     updateSystemSetting: (newSettings: SettingSystem) => void;
     updateRoleSetting: (newSettings: SettingRole) => void;
@@ -60,6 +62,7 @@ const SettingsContext = createContext<SettingsContextType| undefined>(undefined)
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     const [settings, setSettings] = useState<Settings | null>(null);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [currencySymbol, setCurrencySymbol] = useState<string>('$');
 
     useEffect(() => {
         const storedSettings = localStorage.getItem('settings');
@@ -83,6 +86,12 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
             console.log('Settings updated');
         }
     }, [settings, isInitialized]);
+
+    useEffect(() => {
+        if (settings) {
+            getCurrencySymbol();
+        }
+    }, [settings]);
 
     const updateNotificationSetting = (newSettings: Partial<Settings['notification']>) => {
         setSettings((prev) => ({
@@ -117,9 +126,33 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     if (!settings) {
         return <div>Loading...</div>;
     }
+    const getCurrencySymbol = () => {
+        switch (settings.system.currency) {
+            case 'usd':
+                setCurrencySymbol('$');
+                break;
+            case 'eur':
+                setCurrencySymbol('€');
+                break;
+            case 'gbp':
+                setCurrencySymbol('£');
+                break;
+            default:
+                setCurrencySymbol('$');
+                break;
+        }
+    }
+
+    const getCurrencyChange = ({number}:{number:number}) => {
+        const newText = currencySymbol === '€' ? 
+            `${number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,')} ${currencySymbol}` : 
+            `${currencySymbol}${number.toFixed(2)}`;
+        return newText;
+
+    }
 
     return (
-        <SettingsContext.Provider value={{ settings, isInitialized, updateNotificationSetting, updateSystemSetting, updateRoleSetting }}>
+        <SettingsContext.Provider value={{ settings, currencySymbol, isInitialized, getCurrencyChange, updateNotificationSetting, updateSystemSetting, updateRoleSetting }}>
             {children}
         </SettingsContext.Provider>
     );

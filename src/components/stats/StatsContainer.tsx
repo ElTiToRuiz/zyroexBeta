@@ -8,6 +8,7 @@ import { orderTrendsChartConfig } from "../../utils/charts/orderTrends";
 import { orderStateChartConfig } from "../../utils/charts/orderState";
 import { teamMembersChartConfig } from "../../utils/charts/teamMembers";
 import { statsData } from "../../utils/charts/StatsData";
+import { useSettings } from "../../context/settingContext";
 
 
 export const Statistics = () => {
@@ -32,6 +33,7 @@ const StatisticsDashboard = () => {
 	const [ordersState, setOrdersState] = useState<StatsData>({labels: [], data: []});
 	const [teamMembers, setTeamMembers] = useState<StatsData>({labels: [], data: []});
 	const {orders, getRevenue} = useOrders();
+    const { getCurrencyChange } = useSettings();
 
 
 	useEffect(() => {
@@ -67,11 +69,10 @@ const StatisticsDashboard = () => {
 	const STATSTopProducts = topProductChartConfig(topProducts.labels, topProducts.data);
 	const STATSOrderState = orderStateChartConfig(ordersState.labels, ordersState.data);
 	const STATSTeamMembers = teamMembersChartConfig(teamMembers.labels, teamMembers.data);
-    
-
+ 
     const stats = [
       { label: "Total Orders", value: `${orders.length}`, color: "blue" },
-      { label: "Total Revenue", value: `$ ${totalRevenue.toFixed(2)}`, color: "green" },
+      { label: "Total Revenue", value: getCurrencyChange({number: totalRevenue}), color: "green" },
       { label: "Top Product", value: `${topProducts.labels[0]}`, color: "yellow" },
     ];
 

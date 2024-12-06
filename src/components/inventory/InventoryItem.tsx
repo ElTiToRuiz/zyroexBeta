@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { EditableForm } from './InventoryItemEditable';
 import { Product } from '../../utils/types';
+import { useSettings } from '../../context/settingContext';
 
 export const InventoryItem = ({product}:{product:Product}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,7 +12,7 @@ export const InventoryItem = ({product}:{product:Product}) => {
     // Handle opening and closing the modal
     const handleClick = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false);
-
+    const { getCurrencyChange } = useSettings(); 
 
     return (
         <>
@@ -34,7 +35,7 @@ export const InventoryItem = ({product}:{product:Product}) => {
                         SKU: <span className="font-medium text-gray-700">{product.sku}</span>
                     </p>
                     <p className="text-gray-600 mt-2">
-                        Price: <span className="font-bold">${product.price}</span>
+                        Price: <span className="font-bold">{getCurrencyChange({number: product.price})}</span>
                     </p>
                     <p className="text-gray-600 mt-2">
                         Stock: <span className="font-bold">{product.stock}</span>
