@@ -31,11 +31,8 @@ export const TeamDetails = ({goBack }: TeamDetailsProps) => {
     useEffect(() => {
         if (users) {
             const available = users.filter((user: User) => !teamUser.some((member: User) => member.username === user.username));
-
             // Only update state if there's a change in available users
-            if (available.length !== availableUsers.length) {
-                setAvailableUsers(available);
-            }
+            if (available.length !== availableUsers.length) setAvailableUsers(available);
         }
     }, [teamUser]);
 
@@ -53,7 +50,6 @@ export const TeamDetails = ({goBack }: TeamDetailsProps) => {
 
     // Function to handle adding a new member to the team
     const handleAddMember = (user: User) => {
-        console.log(user);
         teamUser.some((member: User) => member.username === user.username) && alert('User is already a member');
         if(activeTeam) {
             addTeamMember(activeTeam, user);
@@ -92,7 +88,7 @@ export const TeamDetails = ({goBack }: TeamDetailsProps) => {
 
                 {/* Members List */}
                 <ul className="space-y-4">
-                    {teamUser.map((member: User, index: number) => {
+                    {teamUser && teamUser.length > 0 && teamUser.map((member: User, index: number) => {
                         if (hasSuperAdminRole())
                             return <TeamMemberListItem key={index} member={member} handleRemoveMember={handleRemoveMember} />
                         else if(member.role !== 'superadmin') 

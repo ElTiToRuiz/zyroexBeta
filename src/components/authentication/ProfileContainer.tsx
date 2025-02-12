@@ -23,12 +23,10 @@ export const ProfileContainer = () => {
     
     const handleEditProfile = () => {
         setOpenEdit(true);
-        console.log("Edit Profile");
     };
 
     const handleSupportClick = () => {
         setOpenSupport(true);
-        console.log("Support button clicked");
     };
 
     return (

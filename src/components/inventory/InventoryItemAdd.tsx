@@ -58,6 +58,7 @@ export const InventoryItemAdd = () => {
 			<button
 				type="button"
 				onClick={handleOpenModal}
+				id="addInventoryItem"
 				className="h-64 text-5xl text-indigo-600 hover:text-indigo-800 focus:outline-none text-center w-full"
 			>
 				+

@@ -25,7 +25,6 @@ export const OrderModal = ({ order, close, openUrgent }: { order: Order, close: 
 
     const saveChanges = () => {
         // Save changes to the order
-        console.log('Order status changed to:', orderStatus);
         saveStatusChange({order, newValue: orderStatus});
         close();
     };

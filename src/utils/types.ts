@@ -13,6 +13,7 @@ export type Product = {
     price: number
     stock: number;
     threshold: number;
+    imageSrc?: string;
 }
 
 export type NewProduct = {

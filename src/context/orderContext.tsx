@@ -159,13 +159,11 @@ export const OrdersProvider = ({ children }:OrdersProviderProps) => {
     }
 
     const saveStatusChange = async ({order, newValue}: {order: Order, newValue: string}) => {
-        console.log(order, newValue);
         order.status = newValue;
         setOrderList([...orderList]);
     }
 
     const makeOrderUrgent = async (orderId: string) => {
-        console.log(orderId);
         const order = orderList.find(order => order.id === orderId);
         if(order){
             order.urgent = !order.urgent;

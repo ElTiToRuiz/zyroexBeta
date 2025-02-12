@@ -1,11 +1,12 @@
-import React from 'react';
-import { FaFilter } from 'react-icons/fa';
-import { useInventory } from '../../../context/InventoryContext';
+import React, { useState, useEffect } from 'react';
+import { FaAngleDoubleDown, FaAngleDoubleUp } from 'react-icons/fa';
 import { FilterInput } from './FilterInput';
 import { FilterToggle } from './FilterToggle';
+import { useInventory } from '../../../context/InventoryContext';
 
 export const InventoryFilters: React.FC = () => {
-	const [showFilters, setShowFilters] = React.useState<boolean>(false);
+    const [showFilters, setShowFilters] = useState<boolean>(false);
+
     const {
         nameFilter,
         stockQuantityMinFilter,
@@ -20,24 +21,38 @@ export const InventoryFilters: React.FC = () => {
         applyFilters,
     } = useInventory();
 
-    const handleApplyFilters = () => {
-        applyFilters(); // Aplica los filtros al inventario
-    };
+    // Aplica los filtros automáticamente cuando cambian
+    useEffect(() => {
+        applyFilters();
+    }, [
+        nameFilter,
+        stockQuantityMinFilter,
+        stockQuantityMaxFilter,
+        filterOutOfstockQuantity,
+        filterLowstockQuantity
+    ]);
 
     return (
-        <div className="p-4 bg-white shadow-md rounded-lg">
-            <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">Filters</h3>
+        <div className="p-4 bg-white shadow-lg rounded-xl transition-all">
+            <div
+                className="flex items-center justify-between group"
+                onClick={() => setShowFilters(!showFilters)}
+            >
+                <h3 className="text-lg font-semibold text-gray-700">🔎 Inventory Filters</h3>
                 <button
-                    onClick={() => setShowFilters((prev) => !prev)}
-                    className="text-gray-600 hover:text-gray-900"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowFilters(!showFilters);
+                    }}
+                    className="text-gray-600 group-hover:text-indigo-600 transition"
                 >
-                    <FaFilter size={20} />
+                    {showFilters ? <FaAngleDoubleUp size={24} /> : <FaAngleDoubleDown size={24} />}
                 </button>
             </div>
 
+
             {showFilters && (
-                <div className="space-y-4">
+                <div className="space-y-4 animate-fade-in mt-2">
                     <FilterInput
                         label="Product Name"
                         value={nameFilter}
@@ -45,23 +60,25 @@ export const InventoryFilters: React.FC = () => {
                         placeholder="Search by name"
                     />
 
-                    <FilterInput
-                        label="Min stockQuantity"
-                        value={stockQuantityMinFilter}
-                        onChange={(value) => setstockQuantityMinFilter(value as number | '')}
-                        type="number"
-                        placeholder="Min stockQuantity"
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <FilterInput
+                            label="Min Stock"
+                            value={stockQuantityMinFilter}
+                            onChange={(value) => setstockQuantityMinFilter(value as number | '')}
+                            type="number"
+                            placeholder="Min stock"
+                        />
 
-                    <FilterInput
-                        label="Max stockQuantity"
-                        value={stockQuantityMaxFilter}
-                        onChange={(value) => setstockQuantityMaxFilter(value as number | '')}
-                        type="number"
-                        placeholder="Max stockQuantity"
-                    />
+                        <FilterInput
+                            label="Max Stock"
+                            value={stockQuantityMaxFilter}
+                            onChange={(value) => setstockQuantityMaxFilter(value as number | '')}
+                            type="number"
+                            placeholder="Max stock"
+                        />
+                    </div>
 
-                    <div className="flex flex-row justify-start space-x-10">
+                    <div className="flex flex-row justify-start space-x-8">
                         <FilterToggle
                             label="Out of Stock"
                             checked={filterOutOfstockQuantity}
@@ -73,15 +90,6 @@ export const InventoryFilters: React.FC = () => {
                             checked={filterLowstockQuantity}
                             onChange={() => setFilterLowstockQuantity(!filterLowstockQuantity)}
                         />
-                    </div>
-
-                    <div className="mt-4">
-                        <button
-                            onClick={handleApplyFilters}
-                            className="w-full py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            Apply Filters
-                        </button>
                     </div>
                 </div>
             )}

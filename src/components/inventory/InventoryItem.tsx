@@ -19,6 +19,7 @@ export const InventoryItem = ({product}:{product:Product}) => {
             <div
                 className="flex flex-col md:flex-row bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl hover:translate-y-[-3px] transition-shadow duration-300 ease-in-out cursor-pointer"
                 onClick={handleClick}
+                id={`i-${product.id}`}
             >
                 <div className="w-full md:w-1/3 p-4 flex justify-center items-center bg-gray-100">
                 <img

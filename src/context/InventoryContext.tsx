@@ -1,10 +1,12 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { applyFiltersToInventory } from "../services/productService";
 import { Product } from "../utils/types";
 import { products } from "../utils/data/productsData";
 
 interface InventoryContextType {
     inventory: Product[];
+    outOfStockItems: Product[];
+    lowStockItems: Product[];
     filteringInventory: Product[];
     filtersApplied: boolean;
     nameFilter: string;
@@ -40,6 +42,10 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
     const [filteringInventory, setFiltering] = useState<Product[]>(inventory);
     const [filtersApplied, setFiltersApplied] = useState<boolean>(false);
 
+    // Low and Out of stock alerts
+    const [outOfStockItems, setOutOfStockItems] = useState<Product[]>([]);
+    const [lowStockItems, setLowStockItems] = useState<Product[]>([]);
+    
     // Filtros
     const [nameFilter, setNameFilter] = useState<string>('');
     const [stockQuantityMinFilter, setstockQuantityMinFilter] = useState<number | ''>('');
@@ -48,15 +54,29 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
     const [filterLowstockQuantity, setFilterLowstockQuantity] = useState<boolean>(false);
 
     // Efecto para hacer el fetch cuando se monta el componente
+    // Load inventory from localStorage or fetch it if not present
     useEffect(() => {
-        fetchInventory();
+        const inventoryData = JSON.parse(localStorage.getItem('inventory') || '[]');
+        // if inventory is not in local storage, fetch it
+        if (inventoryData.length === 0) fetchInventory();
+        else setInventory(inventoryData);
     }, []);
 
+    // Save inventory to localStorage when it changes, skipping initial render
+    const isInitialMount = useRef(true);
+    useEffect(() => {
+        if (isInitialMount.current) isInitialMount.current = false;
+        else localStorage.setItem('inventory', JSON.stringify(inventory));
+        
+    }, [inventory]);
 
     useEffect(() => {
         // update filteringInventory when inventory changes but keeping filters
         applyFilters();
+        setOutOfStockItems(inventory.filter(product => product.stock === 0));
+        setLowStockItems(inventory.filter(product => product.stock > 0 && product.stock <= product.threshold));
     }, [inventory])
+
 
     // Fetch a la API para obtener los productos
     const fetchInventory = async () => {
@@ -82,22 +102,17 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
         if (updatedProduct) {
             setInventory(inventory.map(product => {
                 if (product.sku === sku) {
-                    return { ...product, name, price, stockQuantity: newstockQuantity, threshold: newThreshold };
+                    return { ...product, name, price, stock: newstockQuantity, threshold: newThreshold };
                 }
                 return product;
             }));
-        } else {
-            console.log('Product not found');
         }
     };
 
     // Función para eliminar un producto
     const onDelete = async (sku: string) => {
         const deletedProduct = inventory.find(product => product.sku === sku);
-        if (!deletedProduct) {
-            console.log('Product not found');
-            return;
-        }
+        if (!deletedProduct) return;
         try{
             setInventory(inventory.filter(product => product.sku !== sku));
         }catch(error){
@@ -118,6 +133,8 @@ export const InventoryProvider = ({ children }: { children: ReactNode }) => {
     return (
         <InventoryContext.Provider value={{
             inventory,
+            outOfStockItems,
+            lowStockItems,
             filteringInventory,
             filtersApplied,
             nameFilter,

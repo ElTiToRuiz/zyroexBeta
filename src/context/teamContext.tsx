@@ -50,7 +50,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             setTeams([...teams,  {id: 'nt', name, description, users: []}]);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setError('Error creating team');
         }
     }
@@ -60,7 +60,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
 
             setActiveTeam(team);
         }catch(error){
-            console.log(error);
+            console.error(error);
             setError('Error updating team');
         }
     }
@@ -69,7 +69,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
         try{
             setTeams(teams.filter((t) => t.id !== team.id));
         }catch(error){
-            console.log(error);
+            console.error(error);
             setError('Error deleting team');
         }
     }
@@ -81,7 +81,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
             setTeamUsers(response);
             return response;
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setError('Error fetching team members');
             return [];
         }
@@ -92,7 +92,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
             team.users.push(user);
             setTeamUsers([...team.users]);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setError('Error adding team member');
         }
     }
@@ -102,7 +102,7 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
             team.users = team.users.filter((u) => u.id !== user.id);
             setTeamUsers([...team.users]);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             setError('Error deleting team member');
         }
     }

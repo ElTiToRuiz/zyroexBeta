@@ -1,5 +1,6 @@
 // Support.tsx
 import React, { useState } from 'react';
+import { CENTRAL_EMAIL } from '../../utils/settings';
 
 
 export const Support = ({close}:{close:()=>void}) => {
@@ -24,7 +25,7 @@ export const Support = ({close}:{close:()=>void}) => {
 							Warning: This feature is currently not functioning as expected.
 						</h3>
 						<p className="text-red-700 text-md mb-4">
-							If you're encountering issues or would like to report a bug, please <a href="mailto:ruizigor16@gmail.com" className="text-red-600 hover:underline">contact us</a>. 
+							If you're encountering issues or would like to report a bug, please <a href={CENTRAL_EMAIL} className="text-red-600 hover:underline">contact us</a>. 
 						</p>
 						<p className="text-red-700 text-sm">
 							Please note, the component displayed is for demonstration purposes only.

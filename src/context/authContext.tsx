@@ -111,7 +111,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             // Set user and auth state on success
             setAuthUser(user);
-            console.log(user);
             setIsAuth(true);
             localStorage.clear();
             navigate('/login'); 
@@ -119,7 +118,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             
             // Reset form and error on success
             setFormValues({ username: '', password: '', email: '' });
-            console.log(`${type.charAt(0).toUpperCase() + type.slice(1)} successful`);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message); // Set error message received from API response

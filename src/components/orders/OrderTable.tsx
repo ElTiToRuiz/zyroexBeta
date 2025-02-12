@@ -48,7 +48,6 @@ export const OrderTable = () => {
         // Find the moved order and update its status
         const movedOrder = sourceOrders.find(order => order.id === result.draggableId);
         const destinationStatus = ordersTable[destinationColumnId].status;
-        console.log('movedOrder', destinationStatus);
         if (movedOrder){
             movedOrder.status = destinationStatus;
             saveStatusChange({order: movedOrder, newValue: movedOrder.status});

@@ -1,0 +1,1 @@
+export const CENTRAL_EMAIL = "mailto:ruizigor@zyroex.com";

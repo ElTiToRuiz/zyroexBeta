@@ -18,7 +18,6 @@ export const AssignOrdersToTeam = () => {
     if(!activeTeam) return null;
 
     useEffect(() => {
-        console.log('AssignOrdersToTeam', orders, activeTeam);
         setTeamOrder(orders.filter(order => order.assignedTeam && order.assignedTeam.includes(activeTeam.id)));
         setRestOrder(orders.filter(order => !teamOrder.includes(order) && !order.assignedTeam));
     }, [activeTeam, orders]);

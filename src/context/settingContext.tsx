@@ -81,10 +81,7 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     useEffect(() => {
-        if (isInitialized && settings) {
-            localStorage.setItem('settings', JSON.stringify(settings));
-            console.log('Settings updated');
-        }
+        if (isInitialized && settings)localStorage.setItem('settings', JSON.stringify(settings));
     }, [settings, isInitialized]);
 
     useEffect(() => {

@@ -20,9 +20,6 @@ export const UserContainer = () => {
     const changeCreate = (b:boolean) => {
         setUserCreating(b);
     }
-
-    console.log(hasSuperAdminRole())
-    console.log(users) 
     useEffect(() => {
         if (userCreating) {
             document.body.style.overflow = 'hidden';
