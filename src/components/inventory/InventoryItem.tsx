@@ -23,9 +23,10 @@ export const InventoryItem = ({product}:{product:Product}) => {
             >
                 <div className="w-full md:w-1/3 p-4 flex justify-center items-center bg-gray-100">
                 <img
-                    src={"/images"}
+                    src={product.imageSrc}
                     alt={product.name}
                     className="object-cover w-32 h-32 md:w-48 md:h-48 rounded-md shadow-md"
+                    loading='lazy'
                 />
                 </div>
 
@@ -56,7 +57,7 @@ export const InventoryItem = ({product}:{product:Product}) => {
             </div>
 
             {isModalOpen  && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+                <div className="fixed inset-0  bg-gray-800 bg-opacity-50 flex justify-center items-center z-50 ">
                     <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
                         <span
                             className="absolute top-3 right-3 text-red-800 cursor-pointer bold font-bold hover:text-red-950 hover:translate-y-[-3px] transition-transform duration-300 ease-in-out"

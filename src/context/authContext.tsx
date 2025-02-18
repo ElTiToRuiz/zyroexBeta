@@ -4,7 +4,7 @@ import { User } from '../utils/types';
 
 const DEMO_USER : User = {
 	id: 'user-id',
-	username: 'test-user',
+	username: 'testing',
 	email: 'testuser@testing',
 	role: 'superadmin',
 	lastLogin: new Date(),

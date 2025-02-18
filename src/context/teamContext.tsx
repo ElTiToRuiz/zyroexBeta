@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useAuthUser } from "./authContext";
 import { Team, User } from "../utils/types";
 import { newTeams } from "../utils/data/teamsData";
+import { getRandomUsers } from "../utils/data/usersData";
 
 interface TeamContextType {
     teams: Team[];
@@ -42,8 +43,8 @@ export const TeamProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     const getAllUsers = async () => {
-        const users = [] as User[];
-        return users;
+        // const users = [] as User[];
+        return getRandomUsers({n:'all'})
     }
     
     const createTeam = async (name:string, description:string) => { 

@@ -5,27 +5,28 @@ import { useTeams } from "../../context/teamContext";
 import { useAuthUser } from "../../context/authContext";
 import { FaPen } from "react-icons/fa";
 import { Team } from "../../utils/types";
+import { motion, AnimatePresence } from "framer-motion";
 
-type teamCache = {
+type TeamCache = {
     team: Team | null;
     view: boolean;
-}
+};
 
 export const TeamContainer = () => {
     const [isModalOpen, setModalOpen] = useState(false);
-    const [selectedTeam, setSelectedTeam] = useState<boolean>(false);
+    const [selectedTeam, setSelectedTeam] = useState(false);
     const [teamToEdit, setTeamToEdit] = useState<Team | null>(null);
 
     const { teams, setActiveTeam } = useTeams();
     const { hasAdminRole } = useAuthUser();
-    
+
     useEffect(() => {
-        const existTeam: teamCache = JSON.parse(localStorage.getItem('viewTeam') || '{}');
+        const existTeam: TeamCache = JSON.parse(localStorage.getItem("viewTeam") || "{}");
         if (existTeam?.team) {
             setActiveTeam(existTeam.team);
             setSelectedTeam(existTeam.view);
         }
-    }, []);
+    }, [setActiveTeam]);
 
     const handleCreateTeam = () => {
         setSelectedTeam(false);
@@ -33,33 +34,35 @@ export const TeamContainer = () => {
     };
 
     const handleViewTeam = (team: Team) => {
-        localStorage.setItem('viewTeam', JSON.stringify({ team, view: true }));
+        localStorage.setItem("viewTeam", JSON.stringify({ team, view: true }));
         setActiveTeam(team);
         setSelectedTeam(true);
     };
 
     const closeModal = () => {
-        localStorage.setItem('viewTeam', JSON.stringify({ team: null, view: false }));
-        setModalOpen(false); 
+        localStorage.setItem("viewTeam", JSON.stringify({ team: null, view: false }));
+        setModalOpen(false);
         setSelectedTeam(false);
-        setActiveTeam(null); 
+        setActiveTeam(null);
     };
 
     const handleEditing = (team: Team) => {
         setTeamToEdit(team);
         setActiveTeam(team);
     };
-    
+
     return (
-        <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
-            {/* If a team is not being viewed, show this header */}
+        <div className="min-h-screen bg-gray-50 p-6 space-y-6">
+            {/* Header */}
             {!selectedTeam && (
-                <div className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-gray-800">{hasAdminRole() ? 'Teams' : 'Your Teams'}</h1>
+                <div className="flex items-center justify-between">
+                    <h1 className="text-3xl font-bold text-gray-800">
+                        {hasAdminRole() ? "Teams" : "Your Teams"}
+                    </h1>
                     {hasAdminRole() && (
                         <button
                             onClick={handleCreateTeam}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                            className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-2xl transition"
                         >
                             Create Team
                         </button>
@@ -67,39 +70,80 @@ export const TeamContainer = () => {
                 </div>
             )}
 
-            {/* Teams list */}
+            {/* Teams List / Details */}
             {!selectedTeam ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {teams.map((team) => (
-                        <div key={team.id} className="p-4 bg-white shadow-lg rounded-lg hover:shadow-2xl transition-all cursor-pointer flex flex-col justify-between relative group">
-                            <div onClick={() => handleViewTeam(team)} aria-label={`View details of ${team.name}`}>
-                                <h2 className="text-lg font-semibold text-gray-700">{team.name}</h2>
-                                <p className="text-sm text-gray-600">{team.description}</p>
-                                <p className="text-sm text-gray-400 mt-2 italic">Click to view details</p>
+                        <motion.div
+                            key={team.id}
+                            className="relative bg-white rounded-xl shadow-lg p-6 cursor-pointer group overflow-hidden"
+                            whileHover={{ scale: 1.03 }}
+                            onClick={() => handleViewTeam(team)}
+                        >
+                            <div>
+                                <h2 className="text-xl font-semibold text-gray-700">
+                                    {team.name}
+                                </h2>
+                                <p className="text-sm text-gray-600 mt-2">
+                                    {team.description}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-4 italic">
+                                    Click to view details
+                                </p>
                             </div>
-                         
-                            {
-                                hasAdminRole() && 
-                                <div 
-                                    className="m-3 absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                                    onClick={() => handleEditing(team)}
+                            {hasAdminRole() && (
+                                <motion.div
+                                    className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleEditing(team);
+                                    }}
                                 >
-                                    <FaPen className="w-4 h-4 text-gray-600 hover:text-gray-800 cursor-pointer transition" />
-                                </div>
-                            }
-                        </div>
+                                    <FaPen className="w-5 h-5 text-gray-600 hover:text-gray-800" />
+                                </motion.div>
+                            )}
+                        </motion.div>
                     ))}
                 </div>
             ) : (
                 <TeamDetails goBack={closeModal} />
             )}
 
-            {/* Modal for creating/editing teams */}
-            {isModalOpen && !selectedTeam && (
-                <TeamFormModal team={null} closeModal={closeModal} />
-            )}
+            {/* Modal for Creating Team */}
+            <AnimatePresence>
+                {isModalOpen && !selectedTeam && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <TeamFormModal team={null} closeModal={closeModal} />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            {teamToEdit && <TeamFormModal team={teamToEdit} closeModal={()=>{setTeamToEdit(null)}} goBack={closeModal} />}
+            {/* Modal for Editing Team */}
+            <AnimatePresence>
+                {teamToEdit && (
+                    <motion.div
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        <TeamFormModal
+                            team={teamToEdit}
+                            closeModal={() => {
+                                setTeamToEdit(null);
+                            }}
+                            goBack={closeModal}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };

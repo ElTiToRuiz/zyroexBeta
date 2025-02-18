@@ -6,10 +6,11 @@ import { useAuthUser } from '../../context/authContext';
 import { IconButton } from './IconButton';
 
 interface HeaderProps {
-  toggleSidebar: () => void;
+    toggleSidebar: () => void;
+    isOpen: boolean;
 }
 
-export const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
+export const Header: React.FC<HeaderProps> = ({ toggleSidebar, isOpen }) => {
     const { authUser } = useAuthUser();
     const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             className="bg-gray-700 text-white p-4 flex justify-between items-center shadow-md"
         >
             {/* Botón para togglear el sidebar (visible solo si el usuario no está en estado "pending") */}
-            {authUser && authUser.role !== 'pending' && (
+            {authUser && authUser.role !== 'pending' && !isOpen && (
                 <IconButton 
                     onClick={toggleSidebar}
                     icon={<FaAlignJustify />} 
@@ -32,14 +33,14 @@ export const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
             {/* Logo o nombre de la aplicación, con efecto hover */}
             <motion.div 
                 whileHover={{ scale: 1.05 }}
-                className="text-xl font-bold cursor-pointer"
+                className="text-xl md:text-3xl lg:text-4xl xl:8xl font-bold cursor-pointer"
                 onClick={() => navigate('/')}
             >
                 Nexora Demo App
             </motion.div>
 
             {/* Botones de navegación */}
-            <div className="flex space-x-6">
+            <div className="flex md:space-x-2 lg:space-x-5">
                 <IconButton
                     onClick={() => navigate('/')}
                     icon={

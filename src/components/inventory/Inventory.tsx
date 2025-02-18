@@ -23,9 +23,9 @@ export const Inventory = () => {
     ]
     return (
     
-        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 p-10">
+        <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-50 md:p-10 md:pt-4 p-4">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex flex-col gap-5 md:flex-row justify-between items-center mb-8">
                 <h1 className="text-4xl font-extrabold text-gray-800 flex items-center gap-3">
                     <FaBoxOpen className="text-blue-600" />
                     Inventory Management
@@ -40,7 +40,7 @@ export const Inventory = () => {
             </div>
 
             {/* Inventory Actions */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
                 {/* Stock Alerts */}
                 <div className="lg:col-span-2">

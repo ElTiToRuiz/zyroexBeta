@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { useOrders } from "../../context/orderContext";
 import { useTeams } from "../../context/teamContext";
 import { IoMdAdd } from "react-icons/io";
-import { FaCheck } from "react-icons/fa";
 import { useAuthUser } from "../../context/authContext";
-import { OrderModal } from "../orders/OrderCardModal";
-import { UrgentConfirmation } from "../orders/MakeUrgent";
 import { Order } from "../../utils/types";
+import { OrderCard } from "../orders/OrderCard";
+import { IoClose } from "react-icons/io5";
 
 export const AssignOrdersToTeam = () => {
     const { orders} = useOrders();
@@ -44,7 +43,16 @@ export const AssignOrdersToTeam = () => {
                 {teamOrder.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
                         {teamOrder.map(order => (
-                            <AddOrderCard key={order.id} order={order} added={true} handle={handleRemoveOrder}/>
+                            <div className="relative bg-white border shadow-sm rounded hover:shadow-md transition-shadow">
+                            <OrderCard order={order} type="team" />
+                            <button
+                                onClick={() => handleRemoveOrder(order)}
+                                className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors"
+                                title="Assign to team"
+                            >
+                                <IoClose size={20} />
+                            </button>
+                        </div>
                         ))}
                     </div>
                 ) : (
@@ -57,9 +65,18 @@ export const AssignOrdersToTeam = () => {
                     
                     {/* Display orders that are not yet assigned */}
                     {restOrder.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 w-full">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
                             {restOrder.map(order => (
-                                <AddOrderCard key={order.id} order={order} added={false} handle={handleAddOrder} />
+                                <div className="relative bg-white border shadow-sm rounded hover:shadow-md transition-shadow">
+                                    <OrderCard order={order} type="team" />
+                                    <button
+                                        onClick={() => handleAddOrder(order)}
+                                        className="absolute top-2 right-2 flex items-center justify-center w-8 h-8 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
+                                        title="Assign to team"
+                                    >
+                                        <IoMdAdd size={20} />
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     ) : (
@@ -70,60 +87,4 @@ export const AssignOrdersToTeam = () => {
             
         </div>
     );
-};
-
-
-const AddOrderCard = ({ order, added, handle }:{order:Order, added: boolean, handle:(order:Order)=>void}) => {
-    const [showModal, setShowModal] = useState(false);
-    const [showUrgent, setShowUrgent] = useState(false);
-    const { hasAdminRole } = useAuthUser();
-    
-    return (
-        <>
-            <div className="relative group cursor-pointer flex flex-col justify-between bg-white rounded-lg shadow-md transition-all duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl"
-                onClick={()=>{setShowModal(true)}} 
-            >
-                {/* Main Card Content */}
-                <div className="flex flex-col p-6 space-y-4 max-h-[250px] sm:max-h-[250px] lg:max-h-[300px]">
-                    {/* Header: Customer Information */}
-                    <div className="space-y-2">
-                        <h3 className="text-2xl font-semibold text-gray-900">{order.customerName}</h3>
-                        <p className="text-xs text-gray-500 truncate">{order.customerEmail}</p>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row justify-between text-sm text-gray-600 space-y-1 sm:space-y-0">
-                        <div>
-                            <p>Order ID: #{order.id.slice(0, 10)}...</p>
-                            <p>Placed: {new Date(order.createdAt).toLocaleDateString()}</p>
-                        </div>
-                    </div>
-
-                    {/* Urgent Badge */}
-                    {order.urgent && (
-                        <div className="bg-red-100 rounded-full p-2 text-center">
-                            <h2 className="text-xl text-red-500 font-bold">URGENT</h2>
-                        </div>
-                    )}
-                </div>
-                
-                
-                {/* Add Icon Button (Visible only on hover) */}
-                {
-                    hasAdminRole() && <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out"
-                        onClick={() => handle(order)}
-                    >
-                        {
-                            !added ? 
-                                <IoMdAdd size={24} className="text-gray-800" /> :
-                                <FaCheck size={24} className="text-green-500" />
-                        }
-                    </div>
-                }
-            </div>
-            
-            {showModal && <OrderModal order={order} close={() => setShowModal(false)}  openUrgent={()=>setShowUrgent(true)}/>}
-            {showUrgent && <UrgentConfirmation close={() => setShowUrgent(false)} order={order}/>}
-            
-        </>
-    )
 };

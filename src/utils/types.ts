@@ -14,6 +14,9 @@ export type Product = {
     stock: number;
     threshold: number;
     imageSrc?: string;
+    category?: string;
+    description?: string;
+    rating?: number;
 }
 
 export type NewProduct = {

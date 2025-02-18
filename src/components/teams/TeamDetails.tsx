@@ -6,6 +6,9 @@ import { useTeams } from "../../context/teamContext";
 import { AssignOrdersToTeam } from "./AssignOrder";
 import { OrdersProvider } from "../../context/orderContext";
 import { User } from "../../utils/types";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaPlus } from "react-icons/fa";
+
 // Define the TeamDetailsProps interface
 interface TeamDetailsProps {
     goBack: () => void;
@@ -15,29 +18,23 @@ export const TeamDetails = ({goBack }: TeamDetailsProps) => {
     const [isSearchModalOpen, setSearchModalOpen] = useState(false);
     const [availableUsers, setAvailableUsers] = useState<User[]>([]); 
     const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
-    const [users, setUsers] = useState<User[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const { teamUser, activeTeam, getTeamMembers, addTeamMember,  getAllUsers, deleteTeamMember } = useTeams();
     const { hasAdminRole, hasSuperAdminRole } = useAuthUser();
     
     useEffect(() => {
         (async () => {
             if (activeTeam) {
-                getTeamMembers(activeTeam); 
-                setUsers(await getAllUsers());
+                getTeamMembers(activeTeam);      
+                const available = (await getAllUsers()).filter((user: User) => !teamUser.some((member: User) => member.username === user.username));
+                setAvailableUsers(available);
+                setFilteredUsers(available)
             }
         })()
     }, [activeTeam]);
 
     useEffect(() => {
-        if (users) {
-            const available = users.filter((user: User) => !teamUser.some((member: User) => member.username === user.username));
-            // Only update state if there's a change in available users
-            if (available.length !== availableUsers.length) setAvailableUsers(available);
-        }
     }, [teamUser]);
-
-    // State for managing the search query
-    const [searchQuery, setSearchQuery] = useState('');
 
     // Handle search input change
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,124 +65,162 @@ export const TeamDetails = ({goBack }: TeamDetailsProps) => {
 
     return (
         <>
-            <div className={`p-6 bg-white shadow-lg rounded-lg max-w-3xl mx-auto relative ${isSearchModalOpen ? 'overflow-y-hidden' : ''}`}>
+            <div className="relative max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg transition-all duration-300">
                 {/* Header Section */}
-                <div className="flex justify-between items-center mb-6">
-                    {/* Team Name */}
-                    <h2 className="text-2xl font-semibold text-gray-800">
-                        {activeTeam?.name || 'No Team Selected'}
-                    </h2>
-                    
-                    {/* Back Button */}
+                <div className="flex justify-between items-center mb-6 border-b pb-4">
+                    <h2 className="text-xl font-bold text-gray-800">{activeTeam?.name || "No Team Selected"}</h2>
                     <button
                         onClick={goBack}
-                        className="py-1 px-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all duration-200 ease-in-out"
+                        className="px-3 py-1 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-all"
                         aria-label="Back to Teams"
                     >
-                        Back to Teams
+                        Back
                     </button>
                 </div>
 
                 {/* Members List */}
-                <ul className="space-y-4">
-                    {teamUser && teamUser.length > 0 && teamUser.map((member: User, index: number) => {
+                <ul className="space-y-3">
+                    {teamUser && teamUser.length > 0 ? teamUser.map((member: User, index: number) => {
                         if (hasSuperAdminRole())
                             return <TeamMemberListItem key={index} member={member} handleRemoveMember={handleRemoveMember} />
                         else if(member.role !== 'superadmin') 
                             return <TeamMemberListItem key={index} member={member} handleRemoveMember={handleRemoveMember} />
                         else return null;
-                    })}
+                    }) : (
+                        <p className="text-gray-500">No members in this team yet.</p>
+                    )}
                 </ul>
 
-                {/* Add New Member Section */}
-                { hasAdminRole() &&
-                    <div className="mt-4 bg-green-100 rounded-lg p-4 flex justify-center">
-                        <span
-                            className="text-green-700 font-semibold cursor-pointer hover:text-green-800 "
-                            onClick={() => setSearchModalOpen(true)}
-                        >
-                            + Add new member
-                        </span>
-                    </div>
+                {/* Floating Add Member Button */}
+                {hasAdminRole() && 
+                    <button
+                        className="fixed bottom-6 right-6 w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-green-600 transition-all"
+                        onClick={() => setSearchModalOpen(true)}
+                    >
+                        <FaPlus />
+                    </button>
                 }
                 
-                {teamUser && <TeamStats members={teamUser} />}
+                {/* Stats Section */}
+                {teamUser.length > 0 && <TeamStats members={teamUser} />}
+            </div>
 
-                {/* Overlay and Add Member Search Modal */}
+            <AnimatePresence>
                 {isSearchModalOpen && (
                     <>
                         {/* Overlay */}
-                        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 z-40" />
+                        <motion.div
+                            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                        />
                         {/* Modal */}
-                        <div className="fixed inset-0 flex justify-center items-center z-50">
-                            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                                <h3 className="text-xl font-semibold mb-4">Search and Add Member</h3>
-                                
+                        <motion.div
+                            className="fixed inset-0 flex items-center justify-center z-50"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                        >
+                            <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                                <h3 className="text-lg font-semibold mb-4">Add a Member</h3>
                                 <input
                                     type="text"
-                                    className="w-full px-4 py-2 mb-4 border rounded-lg"
+                                    className="w-full p-2 border rounded-md mb-3"
                                     placeholder="Search by username"
                                     value={searchQuery}
                                     onChange={handleSearchChange}
                                 />
-                            
-                                {/* List of available users */}
-                                <ul className="space-y-2 max-h-60 overflow-y-auto">
-                                    {filteredUsers.length === 0 && (
+                                <ul className="max-h-40 overflow-y-auto space-y-2">
+                                    {filteredUsers.length === 0 ? (
                                         <li className="text-gray-500">No users found</li>
-                                    )}
-                                    {filteredUsers.map((user: User) => (
-                                        <li
-                                            key={user.id}
-                                            className="flex justify-between items-center px-4 py-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200"
-                                            onClick={() => handleAddMember(user)}
-                                        >
-                                            <div className="flex flex-col">
+                                    ) : (
+                                        filteredUsers.map((user) => (
+                                            <li
+                                                key={user.id}
+                                                className="flex justify-between items-center px-3 py-2 bg-gray-100 rounded-md hover:bg-gray-200 transition-all"
+                                            >
                                                 <span className="text-gray-700">{user.username}</span>
-                                                <span className="text-gray-500 text-xs">{user.email}</span>
-                                            </div>
-                                            <button className="text-blue-600">Add</button>
-                                        </li>
-                                    ))}
+                                                <button
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                    onClick={() => handleAddMember(user)}
+                                                >
+                                                    Add
+                                                </button>
+                                            </li>
+                                        ))
+                                    )}
                                 </ul>
-
-                                {/* Close Modal */}
                                 <button
-                                    onClick={() => setSearchModalOpen(false)} // Close the modal
-                                    className="mt-4 w-full py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700"
+                                    className="mt-4 w-full py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
+                                    onClick={() => setSearchModalOpen(false)}
                                 >
                                     Close
                                 </button>
                             </div>
-                        </div>
+                        </motion.div>
                     </>
                 )}
-            </div>
+            </AnimatePresence>
+
             <OrdersProvider>
                 <AssignOrdersToTeam />
             </OrdersProvider>
-        </>      
+        </>
     );
 };
 
 
-const TeamMemberListItem = ({member, handleRemoveMember}:{member:User, handleRemoveMember:(member:User)=>void}) => {
-    const {hasAdminRole} = useAuthUser();
+const TeamMemberListItem = ({member, handleRemoveMember}: {member: User; handleRemoveMember: (member: User) => void;}) => {
+    const { hasAdminRole } = useAuthUser();
+  
+    const getInitials = (name: string) => {
+        return name
+          .split(" ")
+          .map((n) => n[0])
+          .join("")
+          .toUpperCase();
+    };
+
     return (
-        <li className="flex items-center justify-between px-4 py-3 bg-gray-100 rounded-lg shadow-sm">
-            <div className="flex flex-col">
-                <span className="text-gray-700">{member.username}</span>
-                <span className="text-gray-500 text-xs">{member.email}</span>
-            </div>
-            <span className="text-gray-600">{member.role}</span>
-            {
-                hasAdminRole()  && <IoCloseSharp
-                    className="w-5 h-5 text-red-500 cursor-pointer hover:text-red-700 transition"
-                    aria-label={`Remove ${member.username}`}
-                    onClick={() => handleRemoveMember(member)}
-                />
-            }
+        <div className="flex items-center gap-4 p-4 bg-white shadow-md rounded-lg border border-gray-200 
+          transition-all duration-300 hover:shadow-xl active:scale-95 md:flex-row flex-col">
             
-        </li>
-    )
-}
+            {/* Avatar */}
+            <div className="w-14 h-14 flex items-center justify-center text-lg font-semibold text-white rounded-full 
+                bg-gradient-to-r from-indigo-500 to-purple-500 shadow-md">
+                {getInitials(member.username)}
+            </div>
+    
+            {/* User Info */}
+            <div className="flex flex-col items-center text-center md:items-start md:text-left">
+                <h3 className="text-gray-900 font-semibold text-lg">{member.username}</h3>
+                <p className="text-gray-500 text-sm">{member.email}</p>
+            </div>
+    
+            {/* Role & Actions (On larger screens, moves to the right) */}
+            <div className="flex items-center gap-3 mt-3 md:mt-0 md:ml-auto">
+                {/* Role Badge */}
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-600">
+                    {member.role}
+                </span>
+        
+                {/* Remove Button (Only visible to admins) */}
+                {hasAdminRole() && (
+                    <button
+                        className="w-9 h-9 flex items-center justify-center rounded-full bg-red-100 text-red-500 
+                        hover:bg-red-500 hover:text-white transition-all duration-300 relative overflow-hidden"
+                        aria-label={`Remove ${member.username}`}
+                        onClick={() => handleRemoveMember(member)}
+                        tabIndex={0}
+                        onKeyDown={(e) => e.key === "Enter" && handleRemoveMember(member)}
+                    >
+                        <IoCloseSharp className="w-5 h-5" />
+                        {/* Ripple Effect */}
+                        <span className="absolute inset-0 bg-red-500 opacity-0 transition-opacity duration-300 group-hover:opacity-20"></span>
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+};

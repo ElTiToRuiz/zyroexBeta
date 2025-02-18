@@ -1,6 +1,6 @@
 import { notifications } from '../../utils/data/notificationData';
 import { parseDateToLocal } from '../authentication/ProfileContainer';
-
+import { motion } from 'framer-motion';
 
 const notificationColor = (priority: string) => {
     switch (priority) {
@@ -22,8 +22,30 @@ export const NotificationContainer = () => {
 
     return (
       <div className="p-6">
-        <h1 className="text-2xl mb-4">Notification Center</h1>
-        <h2 className="text-xl mt-8 mb-2">Inbox</h2>
+       <header className="mb-8 text-center">
+            <motion.h1
+                className="text-4xl font-extrabold flex items-center justify-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <span role="img" aria-label="bell" className="mr-2">
+                    🔔
+                </span>
+                Notification Center
+            </motion.h1>
+            <motion.h2
+                className="text-xl mt-2 text-gray-700 flex items-center justify-center"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+            >
+                <span role="img" aria-label="inbox" className="mr-2">
+                    📥
+                </span>
+                Inbox
+            </motion.h2>
+        </header>
         <div className="overflow-x-auto shadow-lg rounded-lg border border-gray-200">
             <table className="min-w-full table-auto">
                 <thead className="bg-gray-50">

@@ -19,6 +19,8 @@ import { MainLayout } from "./MainLayout";
 import { EmptyLayout } from "./Outlet";
 import { InventoryProvider } from "../../context/InventoryContext";
 import { InventoryClientView } from "../inventory/client/InventoryClient";
+import { NotificationContainer2 } from "../notification/NotificationView2";
+import { ConfigurationPage } from "../configuration/ConfigurationView";
 
 
 export const MainApp = () => {
@@ -40,7 +42,8 @@ export const MainApp = () => {
                     <Route path="/teams" element={authUser?.role === "pending" ? <Navigate to="/unauthorized" /> : <TeamProvider><TeamContainer /></TeamProvider>} />
                     {/* <Route path="/shipments" element={hasAdminRole() ? <ShipmentsPage /> : <Navigate to="/unauthorized" />} /> */}
                     <Route path="/notifications" element={authUser?.role === "pending" ? <Navigate to="/unauthorized" /> : <NotificationContainer />} />
-                    {/* <Route path="/configuration" element={hasAdminRole() ? <ConfigurationPage /> : <Navigate to="/unauthorized" />} /> */}
+                    <Route path="/notifications" element={authUser?.role === "pending" ? <Navigate to="/unauthorized" /> : <NotificationContainer2 />} />
+                    <Route path="/configuration" element={hasAdminRole() ? <ConfigurationPage /> : <Navigate to="/unauthorized" />} />
                     <Route path="/profile" element={<ProfileContainer />} />
                 </Route>
 

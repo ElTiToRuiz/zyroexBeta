@@ -1,404 +1,128 @@
 import { Product } from "../types";
 
+const randomUUID = () => {
+    return Math.random().toString(36).substring(2) + Date.now().toString(36);
+}
+
 export const products: Product[] = [
     {
-        id: "P001",
-        name: "Laptop",
-        sku: "LAP-001",
-        price: 999.99,
-        stock: 50,
-        threshold: 10
+        id: randomUUID(),
+        name: 'MacBook Pro 15"',
+        sku: 'MC-15-1001',
+        price: 1500,
+        stock: 25,
+        threshold: 5,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/8/8c/MacBook_Pro_15_inch.png',
+        category: 'Laptop',
+        rating: 4.8,
+        description: 'Powerful laptop with Retina display, fast processors, and long battery life for professionals.'
     },
     {
-        id: "P002",
-        name: "Wireless Mouse",
-        sku: "MSE-002",
-        price: 25.99,
-        stock: 200,
-        threshold: 20
-    },
-    {
-        id: "P003",
-        name: "Keyboard",
-        sku: "KEY-003",
-        price: 49.99,
-        stock: 150,
-        threshold: 15
-    },
-    {
-        id: "P004",
-        name: "Smartphone",
-        sku: "SPH-004",
-        price: 799.99,
-        stock: 30,
-        threshold: 5
-    },
-    {
-        id: "P005",
-        name: "Headphones",
-        sku: "HPD-005",
-        price: 129.99,
+        id: randomUUID(),
+        name: 'Wireless Mouse',
+        sku: 'WM-1002',
+        price: 25,
         stock: 100,
-        threshold: 10
+        threshold: 10,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/2/28/Logitech_MX_Master_3.jpg',
+        category: 'Peripherals',
+        rating: 4.6,
+        description: 'Ergonomic wireless mouse with customizable buttons and precise tracking for productivity.'
     },
-    // {
-    //     id: "P006",
-    //     name: "Bluetooth Speaker",
-    //     sku: "BTS-006",
-    //     price: 89.99,
-    //     stock: 75,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P007",
-    //     name: "Smartwatch",
-    //     sku: "SMW-007",
-    //     price: 199.99,
-    //     stock: 60,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P008",
-    //     name: "External Hard Drive",
-    //     sku: "EXH-008",
-    //     price: 59.99,
-    //     stock: 40,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P009",
-    //     name: "Laptop Bag",
-    //     sku: "LBG-009",
-    //     price: 39.99,
-    //     stock: 120,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P010",
-    //     name: "Webcam",
-    //     sku: "WBC-010",
-    //     price: 49.99,
-    //     stock: 90,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P011",
-    //     name: "Portable Charger",
-    //     sku: "PCH-011",
-    //     price: 19.99,
-    //     stock: 150,
-    //     threshold: 25
-    // },
-    // {
-    //     id: "P012",
-    //     name: "Camera Tripod",
-    //     sku: "CTP-012",
-    //     price: 39.99,
-    //     stock: 60,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P013",
-    //     name: "VR Headset",
-    //     sku: "VRH-013",
-    //     price: 299.99,
-    //     stock: 25,
-    //     threshold: 3
-    // },
-    // {
-    //     id: "P014",
-    //     name: "Wireless Earbuds",
-    //     sku: "WEB-014",
-    //     price: 89.99,
-    //     stock: 120,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P015",
-    //     name: "Laptop Stand",
-    //     sku: "LPS-015",
-    //     price: 29.99,
-    //     stock: 80,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P016",
-    //     name: "Gaming Mouse",
-    //     sku: "GAM-016",
-    //     price: 69.99,
-    //     stock: 200,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P017",
-    //     name: "Gaming Keyboard",
-    //     sku: "GKB-017",
-    //     price: 129.99,
-    //     stock: 180,
-    //     threshold: 20
-    // },
-    // {
-    //     id: "P018",
-    //     name: "Monitor",
-    //     sku: "MNT-018",
-    //     price: 199.99,
-    //     stock: 40,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P019",
-    //     name: "Smart Home Hub",
-    //     sku: "SHH-019",
-    //     price: 129.99,
-    //     stock: 55,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P020",
-    //     name: "Action Camera",
-    //     sku: "ACM-020",
-    //     price: 159.99,
-    //     stock: 30,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P021",
-    //     name: "Gaming Chair",
-    //     sku: "GCH-021",
-    //     price: 199.99,
-    //     stock: 20,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P022",
-    //     name: "Power Bank",
-    //     sku: "PWB-022",
-    //     price: 14.99,
-    //     stock: 250,
-    //     threshold: 30
-    // },
-    // {
-    //     id: "P023",
-    //     name: "Smart Light Bulb",
-    //     sku: "SLB-023",
-    //     price: 9.99,
-    //     stock: 300,
-    //     threshold: 50
-    // },
-    // {
-    //     id: "P024",
-    //     name: "Electric Kettle",
-    //     sku: "EKL-024",
-    //     price: 39.99,
-    //     stock: 120,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P025",
-    //     name: "Blender",
-    //     sku: "BLD-025",
-    //     price: 59.99,
-    //     stock: 70,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P026",
-    //     name: "Toaster",
-    //     sku: "TST-026",
-    //     price: 24.99,
-    //     stock: 90,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P027",
-    //     name: "Dishwasher",
-    //     sku: "DSW-027",
-    //     price: 349.99,
-    //     stock: 40,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P028",
-    //     name: "Refrigerator",
-    //     sku: "RFG-028",
-    //     price: 799.99,
-    //     stock: 15,
-    //     threshold: 2
-    // },
-    // {
-    //     id: "P029",
-    //     name: "Microwave Oven",
-    //     sku: "MOW-029",
-    //     price: 149.99,
-    //     stock: 85,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P030",
-    //     name: "Coffee Maker",
-    //     sku: "CFM-030",
-    //     price: 39.99,
-    //     stock: 150,
-    //     threshold: 20
-    // },
-    // {
-    //     id: "P031",
-    //     name: "Electric Grill",
-    //     sku: "ELG-031",
-    //     price: 99.99,
-    //     stock: 40,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P032",
-    //     name: "Food Processor",
-    //     sku: "FPR-032",
-    //     price: 119.99,
-    //     stock: 60,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P033",
-    //     name: "Waffle Maker",
-    //     sku: "WFM-033",
-    //     price: 29.99,
-    //     stock: 80,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P034",
-    //     name: "Sofa",
-    //     sku: "SOF-034",
-    //     price: 499.99,
-    //     stock: 25,
-    //     threshold: 3
-    // },
-    // {
-    //     id: "P035",
-    //     name: "Dining Table",
-    //     sku: "DIN-035",
-    //     price: 299.99,
-    //     stock: 15,
-    //     threshold: 2
-    // },
-    // {
-    //     id: "P036",
-    //     name: "Office Chair",
-    //     sku: "OFC-036",
-    //     price: 89.99,
-    //     stock: 150,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P037",
-    //     name: "Cabinet",
-    //     sku: "CAB-037",
-    //     price: 149.99,
-    //     stock: 60,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P038",
-    //     name: "Bookcase",
-    //     sku: "BKS-038",
-    //     price: 79.99,
-    //     stock: 45,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P039",
-    //     name: "Luggage Set",
-    //     sku: "LGS-039",
-    //     price: 199.99,
-    //     stock: 35,
-    //     threshold: 5
-    // },
-    // {
-    //     id: "P040",
-    //     name: "Backpack",
-    //     sku: "BPK-040",
-    //     price: 39.99,
-    //     stock: 180,
-    //     threshold: 20
-    // },
-    // {
-    //     id: "P041",
-    //     name: "Wallet",
-    //     sku: "WLT-041",
-    //     price: 19.99,
-    //     stock: 300,
-    //     threshold: 50
-    // },
-    // {
-    //     id: "P042",
-    //     name: "Leather Belt",
-    //     sku: "LBT-042",
-    //     price: 24.99,
-    //     stock: 220,
-    //     threshold: 30
-    // },
-    // {
-    //     id: "P043",
-    //     name: "Shoes",
-    //     sku: "SHO-043",
-    //     price: 59.99,
-    //     stock: 100,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P044",
-    //     name: "Jacket",
-    //     sku: "JKT-044",
-    //     price: 99.99,
-    //     stock: 80,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P045",
-    //     name: "T-Shirt",
-    //     sku: "TSH-045",
-    //     price: 15.99,
-    //     stock: 200,
-    //     threshold: 20
-    // },
-    // {
-    //     id: "P046",
-    //     name: "Jeans",
-    //     sku: "JNS-046",
-    //     price: 49.99,
-    //     stock: 150,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P047",
-    //     name: "Sweater",
-    //     sku: "SWT-047",
-    //     price: 39.99,
-    //     stock: 120,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P048",
-    //     name: "Hat",
-    //     sku: "HT-048",
-    //     price: 19.99,
-    //     stock: 100,
-    //     threshold: 15
-    // },
-    // {
-    //     id: "P049",
-    //     name: "Scarf",
-    //     sku: "SCF-049",
-    //     price: 14.99,
-    //     stock: 90,
-    //     threshold: 10
-    // },
-    // {
-    //     id: "P050",
-    //     name: "Gloves",
-    //     sku: "GLV-050",
-    //     price: 9.99,
-    //     stock: 60,
-    //     threshold: 5
-    // }
+    {
+        id: randomUUID(),
+        name: 'Keyboard Mechanical',
+        sku: 'KM-2003',
+        price: 120,
+        stock: 60,
+        threshold: 15,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/0/0f/Logitech_MX_Keys.png',
+        category: 'Peripherals',
+        rating: 4.7,
+        description: 'Premium mechanical keyboard with tactile keys for fast typing and durability.'
+    },
+    {
+        id: randomUUID(),
+        name: 'Smartphone Galaxy X10',
+        sku: 'SG-4004',
+        price: 800,
+        stock: 45,
+        threshold: 5,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/a/a5/Samsung_Galaxy_S10e.jpg',
+        category: 'Smartphone',
+        rating: 4.5,
+        description: '5G-enabled smartphone with a powerful camera, sleek design, and vibrant display.'
+    },
+    {
+        id: randomUUID(),
+        name: 'Bluetooth Headphones',
+        sku: 'BH-5005',
+        price: 100,
+        stock: 120,
+        threshold: 30,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/5/5c/Beats_Studio3_Wireless.jpg',
+        category: 'Audio',
+        rating: 4.4,
+        description: 'Noise-canceling wireless headphones with deep bass and long battery life for immersive listening.'
+    },
+    {
+        id: randomUUID(),
+        name: '4K TV 55"',
+        sku: 'TV-6006',
+        price: 550,
+        stock: 30,
+        threshold: 3,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Sony_XBR-55X900F_4K_TV.jpg',
+        category: 'Electronics',
+        rating: 4.6,
+        description: '55-inch 4K UHD Smart TV with vibrant colors and built-in streaming apps for an enhanced viewing experience.'
+    },
+    {
+        id: randomUUID(),
+        name: 'Smartwatch FitTrack',
+        sku: 'SW-7007',
+        price: 250,
+        stock: 80,
+        threshold: 20,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/0/0b/Apple_Watch_Series_3.jpg',
+        category: 'Wearables',
+        rating: 4.3,
+        description: 'Stylish smartwatch with fitness tracking, heart rate monitoring, and notifications on the go.'
+    },
+    {
+        id: randomUUID(),
+        name: 'Gaming Mouse',
+        sku: 'GM-8008',
+        price: 50,
+        stock: 150,
+        threshold: 10,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/1/1f/Logitech_G502_Hero.jpg',
+        category: 'Peripherals',
+        rating: 4.5,
+        description: 'High-precision gaming mouse with customizable RGB lighting and programmable buttons.'
+    },
+    {
+        id: randomUUID(),
+        name: 'External SSD 1TB',
+        sku: 'SSD-9009',
+        price: 120,
+        stock: 40,
+        threshold: 8,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/e/ec/Samsung_T5_1TB.jpg',
+        category: 'Storage',
+        rating: 4.8,
+        description: 'Fast and portable 1TB external SSD with quick file transfers and reliable performance.'
+    },
+    {
+        id: randomUUID(),
+        name: 'Digital Camera 20MP',
+        sku: 'DC-1010',
+        price: 600,
+        stock: 20,
+        threshold: 2,
+        imageSrc: 'https://upload.wikimedia.org/wikipedia/commons/1/13/Sony_A6000.jpg',
+        category: 'Camera',
+        rating: 4.7,
+        description: '20MP mirrorless digital camera with interchangeable lenses and high-quality image capture.'
+    }
 ];

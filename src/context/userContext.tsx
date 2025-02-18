@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { User } from '../utils/types';
-import { allUsers } from '../utils/data/usersData';
+import { getRandomUsers } from '../utils/data/usersData';
 
 interface UserContextType {
     users: User[];
@@ -28,7 +28,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // Función para obtener todos los usuarios
     const fetchUsers = async () => { 
         try {
-            const response = allUsers;
+            const response = getRandomUsers({n: 'all'});
             setUsers(response);
             setLoading(false);
         } catch (error) { 
