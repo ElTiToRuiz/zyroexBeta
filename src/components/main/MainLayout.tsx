@@ -5,6 +5,7 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { NotificationPopup } from './NotificationPopup';
 import { useAuthUser } from '../../context/authContext';
+import { CookieBanner } from '../legal/CookiesBanner';
 
 export const MainLayout = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -87,6 +88,9 @@ export const MainLayout = () => {
                 )}
 
                 {authUser?.role !== "pending" && <NotificationPopup />}
+
+                <CookieBanner />
+                
             </div>
         </div>
     );

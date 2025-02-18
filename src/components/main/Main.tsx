@@ -21,6 +21,7 @@ import { InventoryProvider } from "../../context/InventoryContext";
 import { InventoryClientView } from "../inventory/client/InventoryClient";
 import { NotificationContainer2 } from "../notification/NotificationView2";
 import { ConfigurationPage } from "../configuration/ConfigurationView";
+import PrivacyPolicy from "../legal/Privacy";
 
 
 export const MainApp = () => {
@@ -50,6 +51,7 @@ export const MainApp = () => {
                 {/* Rutas sin Sidebar ni Header */}
                 <Route element={<EmptyLayout />}>
                     <Route path="/client/inventory/view" element={<InventoryProvider><InventoryClientView/></InventoryProvider>} />
+                    <Route path="/privacy" element={<PrivacyPolicy />} />
                     <Route path="/unauthorized" element={<Error message="You are not authorized to view this page" id="auth-error-002" />} />
                     <Route path="*" element={<Error message="Page not found" id="auth-error-003" />} />
                 </Route>

@@ -1,4 +1,4 @@
-import { Component, useState } from 'react';
+import { useState } from 'react';
 import { OrderModal } from './OrderCardModal';
 import { UrgentConfirmation } from './MakeUrgent';
 import { Order } from '../../utils/types';

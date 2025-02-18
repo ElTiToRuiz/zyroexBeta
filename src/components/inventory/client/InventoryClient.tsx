@@ -5,6 +5,7 @@ import { CardModal } from "./Modal";
 import { ShoppingCart } from "./ShoppingCart";
 import { useInventory } from "../../../context/InventoryContext";
 import { useSettings } from "../../../context/settingContext";
+import { Footer } from "../../legal/Footer";
 
 export type ClientProduct = {
     id: string;
@@ -190,13 +191,15 @@ export const InventoryClientView = () => {
             <Cart itemCount={cartCount} onClick={() => setShowShopping(true)} />
 
             {/* -- Footer -- */}
-            <footer className="bg-gray-900 text-gray-300 py-6 mt-8">
+            {/* <footer className="bg-gray-900 text-gray-300 py-6 mt-8">
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <p className="text-sm">
                         &copy; {new Date().getFullYear()} Zyroex Store. All rights reserved.
                     </p>
                 </div>
-            </footer>
+            </footer> */}
+            
+            <Footer />
 
             {/* Shopping Cart Modal */}
             {showShopping && (
